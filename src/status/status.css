@@ -1,0 +1,65 @@
+@keyframes pop-in {
+    from {
+        background-color: rgba(15, 15, 15, 0);
+        backdrop-filter: none;
+    }
+}
+
+@keyframes grow {
+    from {
+        opacity: 0;
+        transform: translateY(75px);
+    }
+}
+
+.popup-wrapper {
+    animation: pop-in 0.25s ease-out;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    background-color: rgba(15, 15, 15, 0.8);
+    backdrop-filter: blur(8px);
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+}
+
+.popup {
+    animation: grow 0.15s ease-out;
+    opacity: 1;
+    transform: none;
+    position: relative;
+    color: var(--colour-text);
+    text-align: center;
+    height: 35%;
+    width: 40%;
+    background-color: var(--colour-background);
+    border-radius: 10px;
+    display: flex;
+    flex-flow: column nowrap;
+    padding: 1em;
+    font-size: large;
+    box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.3);
+}
+
+.popup-header {
+    font-size: xx-large;
+    font-weight: bolder;
+    margin-bottom: 1em;
+
+}
+
+.popup-message {
+    flex-grow: 1;
+}
+
+.popup-actions {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.popup-actions > * {
+    margin: 4px;
+}

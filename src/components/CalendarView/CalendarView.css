@@ -1,0 +1,117 @@
+.calendar-view {
+    color: var(--colour-text);
+    background-color: transparent;
+    display: grid;
+    grid-gap: 1px;
+    flex-grow: 1;
+    grid-template-rows:
+        [label] 1fr
+        [time-0800] 1fr
+        [time-0830] 1fr
+        [time-0900] 1fr
+        [time-0930] 1fr
+        [time-1000] 1fr
+        [time-1030] 1fr
+        [time-1100] 1fr
+        [time-1130] 1fr
+        [time-1200] 1fr
+        [time-1230] 1fr
+        [time-1300] 1fr
+        [time-1330] 1fr
+        [time-1400] 1fr
+        [time-1430] 1fr
+        [time-1500] 1fr
+        [time-1530] 1fr
+        [time-1600] 1fr
+        [time-1630] 1fr
+        [time-1700] 1fr
+        [time-1730] 1fr
+        [time-1800] 1fr
+        [time-1830] 1fr
+        [time-1900] 1fr
+        [time-1930] 1fr
+        [time-2000] 1fr
+        [time-2030] 1fr
+        [time-2100] 1fr
+        [time-2130] 1fr
+        [time-2200] 1fr;
+    grid-template-columns:
+        [label] 6em
+        [mon] 1fr
+        [tue] 1fr
+        [wed] 1fr
+        [thu] 1fr
+        [fri] 1fr;
+}
+
+.day-label {
+    background-color: var(--colour-primary);
+}
+
+.calendar-label {
+    background-color: var(--colour-primary);
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+}
+
+.filler-item {
+    background-color: var(--colour-background);
+}
+
+.calendar-view {
+    background-color: var(--colour-grid_border);
+}
+
+.calendar-view::before {
+    content: '';
+    background-color: var(--colour-primary);
+}
+
+.time-slot-wrapper {
+    z-index: 1;
+    position: relative;
+}
+
+.time-slot {
+    position: absolute;
+    border-radius: 5px;
+    padding: 5px;
+    height: 100%;
+    z-index: 800;
+    display: flex;
+    flex-flow: column nowrap;
+    width: 100%;
+}
+
+.time-slot-text-light {
+    flex: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    min-width: 0;
+    color: white;
+}
+
+.time-slot-text-dark {
+    flex: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    min-width: 0;
+    color: black;
+}
+
+.time-slot-tooltip {
+    background-color: black;
+    display: block;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    z-index: 900;
+    position: absolute;
+    padding: 5px;
+    width: 100%;
+    transform: translateY(-35px);
+}
+

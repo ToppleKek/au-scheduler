@@ -1,0 +1,110 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+.App {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: stretch;
+    gap: 4px;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+}
+
+.main-content {
+    text-align: center;
+    display: flex;
+    align-items: stretch;
+    flex-grow: 1;
+    flex-flow: row nowrap;
+    gap: 8px;
+    overflow: auto;
+}
+
+.header {
+    padding: 6px;
+    min-height: 50px;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    border-bottom: 2px solid grey;
+}
+
+.header-text {
+    color: var(--colour-text);
+    font-size: 20px;
+    flex-grow: 1;
+}
+
+.footer {
+    padding: 6px;
+    min-height: 50px;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    border-top: 2px solid grey;
+}
+
+.footer-item {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.footer-item:first-child > * {
+    margin-right: auto;
+}
+
+.footer-item:last-child > * {
+    margin-left: auto;
+}
+
+.fetch-date-text {
+    color: var(--colour-text);
+    font-size: 14px;
+    text-align: center;
+}
+
+.footer-text {
+    flex-grow: 2;
+    color: var(--colour-text);
+    font-size: 14px;
+    text-align: center;
+}
+
+body {
+    background-color: var(--colour-background);
+}
+
+.app-component {
+}
+
+.sidebar {
+    min-width: 300px;
+    max-width: 300px;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.scheduler-wrapper {
+    width: 300px;
+    min-width: 300px;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.calendar-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+/* html,
+body {
+    margin: 0; height: 100%; overflow: hidden
+} */

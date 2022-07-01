@@ -1,0 +1,12 @@
+.inline-button {
+    background-color: transparent;
+    transition: opacity 0.3s;
+    opacity: 75%;
+    color: var(--colour-text);
+    user-select: none;
+    cursor: pointer;
+}
+
+.inline-button:hover {
+    opacity: 100%;
+}
