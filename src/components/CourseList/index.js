@@ -17,6 +17,10 @@ class ListChildHeader extends Component {
         this.props.onStage(this.props.course_code, this.props.children);
     }
 
+    course_unstaged = () => {
+        this.props.onUnstage(this.props.course_code);
+    }
+
     render() {
         const style = {background: this.props.colour ? `linear-gradient(to left, var(--colour-primary) 97%, ${this.props.colour} 3%)` : ''};
 
@@ -24,7 +28,11 @@ class ListChildHeader extends Component {
             <div className='course-header-text' onClick={this.clicked} style={style}>
                 <div className='course-header-action-bar'>
                     <span className='action-bar-text'>{this.props.course_code} ({Util.group_course(this.props.course_code)})</span>
-                    <InlineButton className='action-bar-button' value={this.props.staged ? 'Remove' : 'Add'} onClick={this.course_staged} />
+                    <InlineButton
+                        className='action-bar-button'
+                        value={this.props.staged ? 'Remove' : 'Add'}
+                        onClick={this.props.staged ? this.course_unstaged : this.course_staged}
+                    />
                 </div>
                 {this.props.course_name}
             </div>
@@ -109,6 +117,7 @@ export default class CourseList extends Component {
                             onClick={this.course_expanded}
                             staged={this.props.staged_courses.hasOwnProperty(course_code)}
                             onStage={this.props.onStage}
+                            onUnstage={this.props.onUnstage}
                         />
                         {lecture_child_elements.length === 1 ? null : lecture_child_elements}
                         {lab_child_elements.length === 1 ? null : lab_child_elements}
@@ -144,6 +153,7 @@ export default class CourseList extends Component {
     }
 
     render() {
+        console.dir(this.props.staged_courses);
         let filtered_courses = this.props.courses;
 
         if (this.props.search_term?.length > 0)

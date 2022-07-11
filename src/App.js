@@ -27,21 +27,15 @@ class App extends Component {
         else
             schedule_data = null;
 
-        const old_stage = localStorage.getItem('staged_courses');
-        const old_schedule = localStorage.getItem('current_schedule');
-
         this.state = {
             local_storage_initialized: true,
             course_data: null,
             schedule_data,
             terms: [],
             courses: [],
-            staged_courses: old_stage ? JSON.parse(old_stage) : {},
-            current_term: localStorage.getItem('current_term') || null,
             current_campus: localStorage.getItem('current_campus') || Constants.AU_CAMPUS_LOCATIONS[0],
             search_term: '',
             scheduler_mode: Constants.SCHEDULER_DEFAULT_MODE,
-            current_schedule: old_schedule ? JSON.parse(old_schedule) : [],
             filter: { online: false },
             theme: 'dark',
             popup: {
@@ -77,10 +71,19 @@ class App extends Component {
         const schedule_data = {};
         for (const campus of Constants.AU_CAMPUS_LOCATIONS) {
             const campus_data = {
-                current_term: course_data.campuses[current_campus].terms[0].code,
-                staged_courses: {},
-                current_schedule: []
+                current_term: {
+                    code: course_data.campuses[current_campus].terms[0].code,
+                    name: course_data.campuses[current_campus].terms[0].name
+                },
+                terms: {}
             };
+
+            for (const term of course_data.campuses[current_campus].terms) {
+                campus_data.terms[term.code] = {
+                    staged_courses: {},
+                    current_schedule: []
+                };
+            }
 
             schedule_data[campus] = campus_data;
         }
@@ -89,48 +92,12 @@ class App extends Component {
         return schedule_data;
     }
 
-    _load_state(campus) {
-        // let campuses = localStorage.getItem('campuses');
+    current_term(state) {
+        if (!state)
+            state = this.state;
 
-        // if (!campuses)
-        //     return null;
-
-        // try {
-        //     campuses = JSON.parse(campuses);
-        // } catch (err) {
-        //     console.error(`localStorage parse failure: ${err}`);
-        //     localStorage.setItem('campuses', null);
-        //     return null;
-        // }
-
-        // return {
-        //     current_campus: campus,
-        //     ...campuses[campus]
-        // };
-        // console.log('in _load_state after mount');
-
-        // if (this.state.local_storage_initialized) {
-        //     console.log('localStorage was already initialized. aborting load.');
-        //     return;
-        // }
-
-        // const term_code = localStorage.getItem('current_term');
-        // const campus = localStorage.getItem('current_campus');
-        // const schedule = localStorage.getItem('current_schedule');
-        // const staged_courses = localStorage.getItem('staged_courses');
-
-        // const new_term = this.state.course_data.campuses[campus]?.terms.find(
-        //     (term) => term.code === term_code
-        // );
-
-        // this.setState({
-        //     local_storage_initialized: true,
-        //     courses: new_term?.courses || undefined,
-        //     current_term: term_code || undefined,
-        //     current_campus: campus || undefined,
-        //     current_schedule: schedule ? JSON.parse(schedule) : undefined,
-        //     staged_courses: staged_courses ? JSON.parse(staged_courses) : undefined
-        // });
+        const sd = state.schedule_data[state.current_campus];
+        return sd.terms[sd.current_term.code];
     }
 
     componentDidMount() {
@@ -203,17 +170,23 @@ class App extends Component {
 
     on_term_change = (new_term_code) => {
         console.log(`Term changed to ${new_term_code}`);
-        console.log(`this.state.course_data=${this.state.course_data}`);
 
-        const new_term = this.state.course_data.campuses[this.state.current_campus].terms.find(
-            (term) => term.code === new_term_code
-        );
+        this.setState((state, props) => {
+            const new_term = state.course_data.campuses[state.current_campus].terms.find(
+                (term) => term.code === new_term_code
+            );
 
-        this.setState({
-            current_term: new_term_code,
-            courses: new_term.courses,
-            staged_courses: {},
-            current_schedule: []
+            const schedule_data = { ...state.schedule_data };
+
+            schedule_data[state.current_campus].current_term = {
+                code: new_term.code,
+                name: new_term.name
+            };
+
+            return {
+                courses: new_term.courses,
+                schedule_data
+            };
         });
     }
 
@@ -233,19 +206,34 @@ class App extends Component {
             for (const course of children)
                 delete course.description;
 
-            const copy = { ...state.schedule_data[this.state.current_campus].staged_courses };
+            const current_term_copy = { ...this.current_term(state) };
+            const schedule_data = { ...state.schedule_data };
+            const current_term_code = schedule_data[state.current_campus].current_term.code;
 
-            if (state.schedule_data[this.state.current_campus].staged_courses.hasOwnProperty(course_code))
-                delete copy[course_code];
-            else {
-                copy[course_code] = {
-                    colour: `#${Math.floor(Math.random() * 4096).toString(16).padStart(3, '0')}`,
-                    children
-                };
-            }
+            current_term_copy.staged_courses[course_code] = {
+                colour: `#${Math.floor(Math.random() * 4096).toString(16).padStart(3, '0')}`,
+                children
+            };
+
+            schedule_data[state.current_campus].terms[current_term_code] = current_term_copy;
 
             return {
-                staged_courses: copy
+                schedule_data
+            };
+        });
+    }
+
+    on_unstage = (course_code) => {
+        this.setState((state, props) => {
+            const current_term_copy = { ...this.current_term(state) };
+            const schedule_data = { ...state.schedule_data };
+            const current_term_code = schedule_data[state.current_campus].current_term.code;
+
+            delete current_term_copy.staged_courses[course_code];
+            schedule_data[state.current_campus].terms[current_term_code] = current_term_copy;
+
+            return {
+                schedule_data
             };
         });
     }
@@ -257,9 +245,18 @@ class App extends Component {
     }
 
     on_current_schedule_change = (new_schedule) => {
-        // TODO: fix all these instances as we now use schedule_data instead of raw current_schedule stuff
-        this.setState({
-            current_schedule: new_schedule
+        this.setState((state, props) => {
+            const schedule_data = { ...state.schedule_data };
+            const current_term_copy = { ...this.current_term(state) };
+            const current_term_code = schedule_data[state.current_campus].current_term.code;
+
+
+            current_term_copy.current_schedule = new_schedule;
+            schedule_data[state.current_campus].terms[current_term_code] = current_term_copy;
+
+            return {
+                schedule_data
+            };
         });
     }
 
@@ -280,8 +277,13 @@ class App extends Component {
             'Are you sure you want to remove all courses from the stage?'
         ).then((button) => {
             if (button === Constants.POPUP_BUTTON_YES) {
-                this.setState({
-                    staged_courses: {}
+                this.setState((state, props) => {
+                    const schedule_data = { ...state.schedule_data };
+                    this.current_term().staged_courses = {};
+
+                    return {
+                        schedule_data
+                    };
                 });
             }
         });
@@ -322,7 +324,7 @@ class App extends Component {
                 </div>
                 <div className='main-content'>
                     <div className='sidebar app-component'>
-                        <Selector options={term_options} value={this.state.schedule_data[this.state.current_campus].current_term} onChange={this.on_term_change} />
+                        <Selector options={term_options} value={this.state.schedule_data[this.state.current_campus].current_term.code} onChange={this.on_term_change} />
                         <CourseSearch onChange={this.on_search} />
                         <Button
                             role={'normal'}
@@ -331,23 +333,24 @@ class App extends Component {
                         />
                         <CourseList
                             courses={this.state.courses}
-                            staged_courses={this.state.schedule_data[this.state.current_campus].staged_courses}
+                            staged_courses={this.current_term().staged_courses}
                             search_term={this.state.search_term}
                             onStage={this.on_stage}
+                            onUnstage={this.on_unstage}
                         />
                     </div>
                     <div className='scheduler-wrapper app-component'>
                         <Selector options={Constants.SCHEDULER_MODE_OPTIONS} value={this.state.scheduler_mode} onChange={this.on_scheduler_mode_change} />
                         <Checkbox name='online-filter' label='Exclude online courses' onChange={this.on_online_course_filter_change} />
                         <Scheduler
-                            courses={this.state.schedule_data[this.state.current_campus].staged_courses}
+                            courses={this.current_term().staged_courses}
                             mode={this.state.scheduler_mode}
                             filter={this.state.filter}
                             onSchedule={this.on_current_schedule_change}
                         />
                     </div>
                     <div className='calendar-wrapper app-component'>
-                        <CalendarView schedule={this.state.schedule_data[this.state.current_campus].current_schedule} />
+                        <CalendarView schedule={this.current_term().current_schedule} />
                     </div>
                 </div>
                 <div className='footer'>
