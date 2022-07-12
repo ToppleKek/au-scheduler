@@ -153,11 +153,16 @@ export default class CourseList extends Component {
     }
 
     render() {
-        console.dir(this.props.staged_courses);
         let filtered_courses = this.props.courses;
 
-        if (this.props.search_term?.length > 0)
-            filtered_courses = fuzzysort.go(this.props.search_term, filtered_courses, { keys: ['course_code_full', 'course_name'] }).map((e) => e.obj);
+        if (this.props.search_term?.length > 0) {
+            const options = {
+                keys: ['course_code_full', 'course_name'],
+                threshhold: -10000
+            };
+
+            filtered_courses = fuzzysort.go(this.props.search_term, filtered_courses, options).map((e) => e.obj);
+        }
 
 
         const course_stage = this.props.courses.filter((course) =>
