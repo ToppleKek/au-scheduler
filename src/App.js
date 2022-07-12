@@ -65,8 +65,9 @@ class App extends Component {
     /**
      * Initialize defaults in localStorage.
      */
-    _init_local_storage(course_data, current_campus) {
-        localStorage.setItem('current_campus', Constants.AU_CAMPUS_LOCATIONS[0]);
+    _init_local_storage(course_data) {
+        const current_campus = Constants.AU_CAMPUS_LOCATIONS[0];
+        localStorage.setItem('current_campus', current_campus);
 
         const schedule_data = {};
         for (const campus of Constants.AU_CAMPUS_LOCATIONS) {
@@ -111,11 +112,31 @@ class App extends Component {
                 let loaded_term;
                 let schedule_data = this.state.schedule_data;
                 if (!schedule_data)
-                    schedule_data = this._init_local_storage(json, current_campus_name);
+                    schedule_data = this._init_local_storage(json);
+
+                // Remove terms that no longer exist
+                for (const campus in schedule_data) {
+                    for (const term in schedule_data[campus].terms) {
+                        if (json.campuses[campus].terms.filter((t) => t.code === term).length === 0)
+                            delete schedule_data[campus].terms[term];
+                    }
+                }
+
+                // Add terms that are new
+                for (const campus of Constants.AU_CAMPUS_LOCATIONS) {
+                    for (const term of json.campuses[campus].terms) {
+                        if (!schedule_data[campus].terms.hasOwnProperty(term.code)) {
+                            schedule_data[campus].terms[term.code] = {
+                                staged_courses: {},
+                                current_schedule: []
+                            };
+                        }
+                    }
+                }
 
                 loaded_term = json.campuses[current_campus_name].terms.find(
                     (term) => term.code === schedule_data[current_campus_name].current_term.code
-                )
+                );
 
                 this.setState({
                     course_data: json,
