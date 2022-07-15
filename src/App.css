@@ -24,24 +24,20 @@
     flex-flow: row nowrap;
     gap: 8px;
     overflow: auto;
+    padding-left: 6px;
+    padding-right: 6px;
 }
 
 .header {
-    padding: 6px;
-    min-height: 50px;
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
     border-bottom: 2px solid grey;
+    border-top: none !important;
 }
 
-.header-text {
-    color: var(--colour-text);
-    font-size: 20px;
-    flex-grow: 1;
+.title-text {
+    font-size: 20px !important;
 }
 
-.footer {
+.banner {
     padding: 6px;
     min-height: 50px;
     display: flex;
@@ -50,31 +46,27 @@
     border-top: 2px solid grey;
 }
 
-.footer-item {
+.banner-left {
+    flex: 1;
+    display: flex;
+    justify-content: left;
+}
+
+.banner-center {
     flex: 1;
     display: flex;
     justify-content: center;
 }
 
-.footer-item:first-child > * {
-    margin-right: auto;
+.banner-right {
+    flex: 1;
+    display: flex;
+    justify-content: right;
 }
 
-.footer-item:last-child > * {
-    margin-left: auto;
-}
-
-.fetch-date-text {
+.banner-text {
     color: var(--colour-text);
     font-size: 14px;
-    text-align: center;
-}
-
-.footer-text {
-    flex-grow: 2;
-    color: var(--colour-text);
-    font-size: 14px;
-    text-align: center;
 }
 
 body {

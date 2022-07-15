@@ -339,9 +339,13 @@ class App extends Component {
                     />
                 : null}
 
-                <div className='header'>
-                    <span className='header-text'>au-scheduler</span>
-                    <InlineButton value={'Change theme'} onClick={this.on_theme_toggle} />
+                <div className='banner header'>
+                    <div className='banner-left'>
+                        <div className='banner-text title-text'>au-scheduler</div>
+                    </div>
+                    <div className='banner-right'>
+                        <InlineButton value={'Change theme'} onClick={this.on_theme_toggle} />
+                    </div>
                 </div>
                 <div className='main-content'>
                     <div className='sidebar app-component'>
@@ -374,16 +378,17 @@ class App extends Component {
                         <CalendarView schedule={this.current_term().current_schedule} />
                     </div>
                 </div>
-                <div className='footer'>
-                    <div className='footer-item'>
-                        <div className='fetch-date-text'>
+                <div className='banner'>
+                    <div className='banner-left'>
+                        <div className='banner-text'>
                             {`Course information scraped ${Util.date_delta(this.state.course_data.scrape_date, Date.now())}`}
                         </div>
                     </div>
-                    <div className='footer-item'>
-                        <div className='footer-text'>2022 Braeden Hong</div>
+                    <div className='banner-center'>
+                        <div className='banner-text'></div>
                     </div>
-                    <div className='footer-item'>
+                    <div className='banner-right'>
+                        <div className='banner-text'>(c) 2022 Braeden Hong</div>
                     </div>
                 </div>
             </div>
