@@ -35,11 +35,13 @@
 
 .title-text {
     font-size: 20px !important;
+    white-space: nowrap;
 }
 
 .banner {
     padding: 6px;
     min-height: 50px;
+    max-height: 50px;
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
@@ -50,18 +52,24 @@
     flex: 1;
     display: flex;
     justify-content: left;
+    gap: 6px;
+    align-items: center;
 }
 
 .banner-center {
     flex: 1;
     display: flex;
     justify-content: center;
+    gap: 6px;
+    align-items: center;
 }
 
 .banner-right {
     flex: 1;
     display: flex;
     justify-content: right;
+    gap: 6px;
+    align-items: center;
 }
 
 .banner-text {
