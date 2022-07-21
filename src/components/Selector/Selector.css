@@ -1,10 +1,51 @@
-.generic-select {
-    text-align: left;
-    width: 100%;
-    max-height: 50px;
+.selector-option {
+    transition: background-color 0.15s ease-out;
     cursor: pointer;
-    line-height: 1;
+}
+
+.selector-option:last-child {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.selector-option:hover {
+    background-color: var(--colour-primary);
+}
+
+.selector-body {
+    position: relative;
+    width: 100%;
+}
+
+.selector {
     color: var(--colour-text);
-    display: grid;
-    align-items: center;
+    background-color: var(--colour-background);
+    transition: background-color 0.2s ease-out;
+    width: 100%;
+    border-radius: 5px;
+    user-select: none;
+    cursor: pointer;
+}
+
+.selector-expanded, .selector:hover {
+    background-color: var(--colour-normal_button);
+}
+
+.selector-expanded {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    background-color: var(--colour-grid_border);
+}
+
+.selector-options {
+    z-index: 3000;
+    color: var(--colour-text);
+    background-color: var(--colour-normal_button);
+    position: absolute;
+    user-select: none;
+    width: 100%;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    /* offset-x | offset-y | blur-radius | color */
+    box-shadow: 0 0 5px black;
 }
