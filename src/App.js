@@ -93,11 +93,20 @@ class App extends Component {
         return schedule_data;
     }
 
-    current_term(state) {
+    current_sd = (state) => {
         if (!state)
             state = this.state;
 
-        const sd = state.schedule_data[state.current_campus];
+        return state.schedule_data[state.current_campus];
+    }
+
+    current_term_code = (state) => {
+        const sd = this.current_sd(state);
+        return sd.current_term.code;
+    }
+
+    current_term = (state) => {
+        const sd = this.current_sd(state);
         return sd.terms[sd.current_term.code];
     }
 
@@ -187,6 +196,20 @@ class App extends Component {
     on_theme_toggle = () => {
         this.theme = this.theme === 'dark' ? 'light' : 'dark';
         this._update_theme();
+    }
+
+    on_campus_change = (new_campus) => {
+        this.setState((state, props) => {
+            // const new_term_code = state.schedule_data[new_campus].current_term.code;
+            // cosnt courses = state.course_data.campuses[new_campus].terms.find(
+            //     (term) => term.code === new_term_code
+            // );
+            return {
+                current_campus: new_campus
+            };
+        }, () => {
+            this.on_term_change(this.current_term_code());
+        });
     }
 
     on_term_change = (new_term_code) => {
@@ -320,13 +343,17 @@ class App extends Component {
             );
         }
 
-        const term_options = this.state.course_data.campuses[this.state.current_campus].terms.map((term) => {
-            return {
-                value: term.code,
-                key: term.code,
-                name: term.name
-            };
-        });
+        const term_options = this.state.course_data.campuses[this.state.current_campus].terms.map((term) => ({
+            value: term.code,
+            key: term.code,
+            name: term.name
+        }));
+
+        const campus_options = Object.keys(this.state.course_data.campuses).map((campus) => ({
+            value: campus,
+            key: campus,
+            name: campus
+        }));
 
         return (
             <div className="App">
@@ -342,6 +369,14 @@ class App extends Component {
                 <div className='banner header'>
                     <div className='banner-left'>
                         <div className='banner-text title-text'>au-scheduler</div>
+                        <div>
+                            <Selector
+                                options={campus_options}
+                                value={this.state.current_campus}
+                                onChange={this.on_campus_change}
+                            >
+                            </Selector>
+                        </div>
                     </div>
                     <div className='banner-right'>
                         <InlineButton value={'Change theme'} onClick={this.on_theme_toggle} />
