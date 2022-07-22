@@ -40,6 +40,12 @@
     content: '\f107';
 }
 
+.selector-expanded::after {
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    content: '\f106';
+}
+
 .selector-expanded, .selector:hover {
     background-color: var(--colour-interactable);
 }
@@ -58,6 +64,4 @@
     width: 100%;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    /* offset-x | offset-y | blur-radius | color */
-    /* box-shadow: 0 0 5px black; */
 }
