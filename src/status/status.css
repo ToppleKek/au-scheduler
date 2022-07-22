@@ -36,7 +36,7 @@
     height: 35%;
     width: 40%;
     background-color: var(--colour-background);
-    border-radius: 10px;
+    border-radius: 5px;
     display: flex;
     flex-flow: column nowrap;
     padding: 1em;

@@ -1,6 +1,8 @@
 .selector-option {
     transition: background-color 0.15s ease-out;
     cursor: pointer;
+    text-align: left;
+    padding: 5px;
 }
 
 .selector-option:last-child {

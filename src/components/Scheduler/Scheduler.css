@@ -4,7 +4,7 @@
     background: linear-gradient(to bottom, var(--colour-primary) 200px, var(--colour-grid_border) 25px);
     margin: 2px;
     padding: 5px;
-    border-radius: 10px;
+    border-radius: 5px;
     cursor: pointer;
     border: 3px solid var(--colour-background);
     transition: border 0.3s;
