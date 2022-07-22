@@ -19,33 +19,43 @@
 
 .selector {
     color: var(--colour-text);
-    background-color: var(--colour-background);
-    transition: background-color 0.2s ease-out;
+    background-color: var(--colour-primary);
+    transition: background-color 0.15s ease-out;
     width: 100%;
     border-radius: 5px;
     user-select: none;
     cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    justify-items: center;
+    align-items: center;
+    padding: 5px;
+}
+
+.selector::after {
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    content: '\f107';
 }
 
 .selector-expanded, .selector:hover {
-    background-color: var(--colour-normal_button);
+    background-color: var(--colour-interactable);
 }
 
 .selector-expanded {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-    background-color: var(--colour-grid_border);
 }
 
 .selector-options {
     z-index: 3000;
     color: var(--colour-text);
-    background-color: var(--colour-normal_button);
+    background-color: var(--colour-interactable);
     position: absolute;
     user-select: none;
     width: 100%;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
     /* offset-x | offset-y | blur-radius | color */
-    box-shadow: 0 0 5px black;
+    /* box-shadow: 0 0 5px black; */
 }

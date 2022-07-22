@@ -69,13 +69,16 @@ export default class Selector extends Component {
 
         return (
             <div className='selector-body'>
-                <div
-                    className={`selector ${this.state.expanded ? 'selector-expanded' : ''}`}
-                    onClick={this.toggle}
-                    ref={this.parent_ref}
-                >
-                    {name}
+                <div className='selector-container'>
+                    <div
+                        className={`selector ${this.state.expanded ? 'selector-expanded' : ''}`}
+                        onClick={this.toggle}
+                        ref={this.parent_ref}
+                    >
+                        {name}
+                    </div>
                 </div>
+
                 <div className='selector-options' ref={this.options_ref}>
                     {this.state.expanded ? options : null}
                 </div>
