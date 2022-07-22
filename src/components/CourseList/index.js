@@ -1,7 +1,5 @@
 import { Component } from 'react';
 import InlineButton from '../InlineButton';
-import Button from '../Button';
-import * as Status from '../../status/status';
 import * as Util from '../../util';
 import './CourseList.css';
 
@@ -22,19 +20,36 @@ class ListChildHeader extends Component {
     }
 
     render() {
-        const style = {background: this.props.colour ? `linear-gradient(to left, var(--colour-primary) 97%, ${this.props.colour} 3%)` : ''};
+        const colour_style = {
+            backgroundColor: this.props.colour ? this.props.colour : 'var(--colour-primary)'
+        };
+
+        const no_colour_style = {
+            paddingLeft: '11px',
+            borderTopLeftRadius: '5px',
+            borderBottomLeftRadius: '5px'
+        };
+
+        const text_class = `course-header-text ${this.props.expanded ? 'course-header-text-expanded' : ''}`;
 
         return (
-            <div className='course-header-text' onClick={this.clicked} style={style}>
-                <div className='course-header-action-bar'>
-                    <span className='action-bar-text'>{this.props.course_code} ({Util.group_course(this.props.course_code)})</span>
-                    <InlineButton
-                        className='action-bar-button'
-                        value={this.props.staged ? 'Remove' : 'Add'}
-                        onClick={this.props.staged ? this.course_unstaged : this.course_staged}
-                    />
+            <div className='course-header'>
+                {this.props.colour ? <div className='course-header-colour' style={colour_style} /> : null}
+                <div
+                    className={text_class}
+                    onClick={this.clicked}
+                    style={this.props.colour ? null : no_colour_style}
+                >
+                    <div className='course-header-action-bar'>
+                        <span className='action-bar-text'>{this.props.course_code} ({Util.group_course(this.props.course_code)})</span>
+                        <InlineButton
+                            className='action-bar-button'
+                            value={this.props.staged ? 'Remove' : 'Add'}
+                            onClick={this.props.staged ? this.course_unstaged : this.course_staged}
+                        />
+                    </div>
+                    {this.props.course_name}
                 </div>
-                {this.props.course_name}
             </div>
         );
     }
@@ -108,21 +123,22 @@ export default class CourseList extends Component {
 
             return (
                 <div key={course_code} className='course-item'>
-                    <div className={`course-header ${this._any_registration_available(child_courses) ? '' : 'course-header-unavailable'}`}>
-                        <ListChildHeader
-                            colour={colour}
-                            course_code={course_code}
-                            course_name={child_courses[0].course_name}
-                            children={child_courses}
-                            onClick={this.course_expanded}
-                            staged={this.props.staged_courses.hasOwnProperty(course_code)}
-                            onStage={this.props.onStage}
-                            onUnstage={this.props.onUnstage}
-                        />
-                        {lecture_child_elements.length === 1 ? null : lecture_child_elements}
-                        {lab_child_elements.length === 1 ? null : lab_child_elements}
-                        {other_child_elements.length === 1 ? null : other_child_elements}
-                    </div>
+                    {/* <div className={`course-header ${this._any_registration_available(child_courses) ? '' : 'course-header-unavailable'}`}>
+                    </div> */}
+                    <ListChildHeader
+                        colour={colour}
+                        course_code={course_code}
+                        course_name={child_courses[0].course_name}
+                        children={child_courses}
+                        staged={this.props.staged_courses.hasOwnProperty(course_code)}
+                        expanded={this.state.expanded_courses.includes(course_code)}
+                        onClick={this.course_expanded}
+                        onStage={this.props.onStage}
+                        onUnstage={this.props.onUnstage}
+                    />
+                    {lecture_child_elements.length === 1 ? null : lecture_child_elements}
+                    {lab_child_elements.length === 1 ? null : lab_child_elements}
+                    {other_child_elements.length === 1 ? null : other_child_elements}
                 </div>
             );
     }

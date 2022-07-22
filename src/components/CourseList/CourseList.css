@@ -28,34 +28,51 @@
 }
 
 .course-header {
-    color: var(--colour-text);
+    display: flex;
+    flex-flow: row nowrap;
 }
 
-/* .course-header::before {
-    position: absolute;
-    width: 10%;
-    height: 100%;
-    background-color: aqua;
-} */
+.course-header-colour {
+    width: 7px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.course-header-default-background {
+    background-color: var(--colour-primary);
+    transition: background-color 0.15s ease-out;
+}
+
+.course-header-default-background:hover {
+    background-color: var(--colour-interactable);
+}
 
 .course-header-text {
     background-color: var(--colour-primary);
-    border: 3px solid var(--colour-background);
-    border-radius: 10px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
     text-overflow: ellipsis;
     text-align: left;
     overflow: hidden;
     white-space: nowrap;
-    padding-left: 12px;
+    padding-left: 4px;
     padding-right: 12px;
     line-height: 30px;
-    transition: border 0.3s;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    flex-grow: 1;
+    transition: background-color 0.15s ease-out;
+    cursor: pointer;
 }
 
+.course-header-text:hover, .course-header-text-expanded {
+    background-color: var(--colour-interactable);
+}
 
-.course-header-text:hover {
-    cursor: pointer;
-    border: 3px solid var(--colour-highlight);
+.course-header-text-expanded:hover {
+    background-color: var(--colour-primary);
 }
 
 .course-header-unavailable {
