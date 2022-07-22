@@ -1,4 +1,5 @@
 .calendar-view {
+    text-align: center;
     color: var(--colour-text);
     background-color: transparent;
     display: grid;

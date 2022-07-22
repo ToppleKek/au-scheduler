@@ -8,17 +8,19 @@ import CalendarView from './components/CalendarView';
 import Checkbox from './components/Checkbox';
 import * as Constants from './constants';
 import * as Status from './status/status';
-import { Component } from 'react';
+import { Component, createRef } from 'react';
 import InlineButton from './components/InlineButton';
 import Button from './components/Button';
+import html2canvas from 'html2canvas';
 
 class App extends Component {
     constructor(props) {
         super(props);
 
         this.theme = 'dark';
-        this._update_theme();
+        this.calendar_view_ref = createRef();
 
+        this._update_theme();
         Status.register_popup_callback(this.on_popup_request);
 
         let schedule_data = localStorage.getItem('schedule_data');
@@ -190,6 +192,38 @@ class App extends Component {
             });
 
             resolve(dialog_result);
+        });
+    }
+
+    on_generate_image = () => {
+        if (!this.calendar_view_ref.current)
+            return;
+
+        // Create a copy of the calendar view to 'screenshot'
+        const copy = this.calendar_view_ref.current.cloneNode(true);
+
+        // Move the copy of the calendar view off screen
+        copy.style.position = 'relative';
+        copy.style.left = 0;
+        copy.style.top = `-${window.innerHeight}px`;
+        copy.style.height = '800px';
+        copy.style.width = '1000px';
+
+        document.body.appendChild(copy);
+        html2canvas(copy).then((canvas) => {
+            const current_term_code = this.current_term_code();
+            const current_term_name = this.state.course_data.campuses[this.state.current_campus].terms.find(
+                (term) => term.code === current_term_code
+            ).name;
+            const filename = `AU-Scheule ${this.state.current_campus} ${current_term_name}.png`;
+            const a = document.createElement('a');
+
+            a.href = canvas.toDataURL('image/png');
+            a.download = filename;
+            a.click();
+            a.remove();
+            canvas.remove();
+            copy.remove();
         });
     }
 
@@ -379,6 +413,7 @@ class App extends Component {
                         </div>
                     </div>
                     <div className='banner-right'>
+                        <InlineButton value='Generate image' onClick={this.on_generate_image} />
                         <InlineButton value={'Change theme'} onClick={this.on_theme_toggle} />
                     </div>
                 </div>
@@ -409,7 +444,7 @@ class App extends Component {
                             onSchedule={this.on_current_schedule_change}
                         />
                     </div>
-                    <div className='calendar-wrapper app-component'>
+                    <div className='calendar-wrapper app-component' ref={this.calendar_view_ref}>
                         <CalendarView schedule={this.current_term().current_schedule} />
                     </div>
                 </div>
