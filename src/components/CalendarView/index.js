@@ -64,7 +64,8 @@ class TimeSlot extends Component {
                 </div>
                 <div className='time-slot' style={slot_style} onMouseEnter={this.on_hover} onMouseLeave={this.on_hover}>
                     <span className={text_class}>{this.props.course.course_name}</span>
-                    <span className={text_class}>{this.props.course.course_code_full}</span>
+                    <span className={text_class}>{this.props.course.course_code_full} ({this.props.course.course_type})</span>
+                    <span className={text_class}>{this.props.course.instructor} ({this.props.course.location})</span>
                     <span className={text_class}>{this.props.course.time}</span>
                 </div>
             </div>

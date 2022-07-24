@@ -104,7 +104,6 @@ body {
     flex-flow: column nowrap;
 }
 
-/* html,
-body {
-    margin: 0; height: 100%; overflow: hidden
-} */
+html, body {
+    overflow: hidden
+}

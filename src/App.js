@@ -205,9 +205,9 @@ class App extends Component {
         // Move the copy of the calendar view off screen
         copy.style.position = 'relative';
         copy.style.left = 0;
-        copy.style.top = `-${window.innerHeight}px`;
-        copy.style.height = '800px';
-        copy.style.width = '1000px';
+        copy.style.bottom = `1400px`;
+        copy.style.height = '1000px';
+        copy.style.width = '1400px';
 
         document.body.appendChild(copy);
         html2canvas(copy).then((canvas) => {
@@ -215,7 +215,7 @@ class App extends Component {
             const current_term_name = this.state.course_data.campuses[this.state.current_campus].terms.find(
                 (term) => term.code === current_term_code
             ).name;
-            const filename = `AU-Scheule ${this.state.current_campus} ${current_term_name}.png`;
+            const filename = `AU-Schedule ${this.state.current_campus} ${current_term_name}.png`;
             const a = document.createElement('a');
 
             a.href = canvas.toDataURL('image/png');
