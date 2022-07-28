@@ -1,44 +1,26 @@
 import { Component, createContext } from 'react';
 import * as Constants from '../constants';
+import * as Components from '../components';
 import Button from '../components/Button';
 import './status.css';
 
-let popup_callback = null;
-let rich_popup_callback = null;
-let notification_callback = null;
-
-export function register_popup_callback(fn) {
-    popup_callback = fn;
-}
-
-export function register_rich_popup_callback(fn) {
-    rich_popup_callback = fn;
-}
-
-export function register_notification_callback(fn) {
-    notification_callback = fn;
-}
-
-export function popup(buttons, header, message) {
-    return popup_callback(buttons, header, message);
-}
-
-export function rich_popup(buttons, header, rich_popup_body) {
-    return rich_popup_callback(buttons, header, rich_popup_body);
-}
-
-export function notify(type, message) {
-    return notification_callback(type, message);
-}
+const PopupInteractionContext = createContext({callback: null});
 
 export class Popup extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = { obj: null };
+    }
+
     on_button_click = (button) => {
         const button_type = Constants[`POPUP_BUTTON_${button.toUpperCase()}`];
 
         if (!button_type)
             return;
 
-        this.props.onInteract(button_type);
+        console.log('on_button_click:', this.state.obj);
+        this.props.onInteract({button: button_type, data: this.state.obj});
     }
 
     on_dismiss = () => {
@@ -47,7 +29,16 @@ export class Popup extends Component {
 
     prevent_default = (event) => {
         event.stopPropagation();
-        event.preventDefault();
+    }
+
+    on_item_interact = (key_name, value) => {
+        console.log(`on_item_interact: key_name=${key_name} value=${value}`);
+        this.setState((state) => {
+            const copy = { ...state.obj };
+            copy[key_name] = value;
+
+            return { obj: copy };
+        });
     }
 
     render() {
@@ -66,13 +57,29 @@ export class Popup extends Component {
                         {this.props.header}
                     </div>
                     <div className='popup-message'>
-                        {this.props.message}
+                        <PopupInteractionContext.Provider value={{callback:this.on_item_interact}}>
+                            {this.props.children}
+                        </PopupInteractionContext.Provider>
                     </div>
                     <div className='popup-actions'>
                         {buttons}
                     </div>
                 </div>
             </div>
+        );
+    }
+}
+
+export class Checkbox extends Component {
+    static contextType = PopupInteractionContext;
+
+    on_change = (checked) => {
+        this.context.callback(this.props.key_name, checked);
+    }
+
+    render() {
+        return (
+            <Components.Checkbox name={this.props.name} label={this.props.label} onChange={this.on_change}/>
         );
     }
 }

@@ -1,17 +1,20 @@
 import './App.css';
 import * as Util from './util';
-import Selector from './components/Selector';
-import CourseList from './components/CourseList';
-import CourseSearch from './components/CourseSearch';
-import Scheduler from './components/Scheduler';
-import CalendarView from './components/CalendarView';
-import Checkbox from './components/Checkbox';
 import * as Constants from './constants';
 import * as Status from './status/status';
+import * as RichPopup from './status/RichPopup';
 import { Component, createRef } from 'react';
-import InlineButton from './components/InlineButton';
-import Button from './components/Button';
 import html2canvas from 'html2canvas';
+import {
+    Selector,
+    LineEdit,
+    CourseList,
+    Scheduler,
+    CalendarView,
+    Checkbox,
+    InlineButton,
+    Button
+} from './components';
 
 class App extends Component {
     constructor(props) {
@@ -22,6 +25,7 @@ class App extends Component {
 
         this._update_theme();
         Status.register_popup_callback(this.on_popup_request);
+        Status.register_rich_popup_callback(this.on_rich_popup_request);
 
         let schedule_data = localStorage.getItem('schedule_data');
         if (schedule_data)
@@ -41,6 +45,8 @@ class App extends Component {
             filter: { online: false },
             theme: 'dark',
             popup: {
+                rich: false,
+                rich_body: [],
                 header: null,
                 message: null,
                 buttons: [],
@@ -163,6 +169,14 @@ class App extends Component {
     }
 
     on_popup_request = (buttons, header, message) => {
+        return this.on_generic_popup_request(false, buttons, {header, message});
+    }
+
+    on_rich_popup_request = (buttons, header, body) => {
+        return this.on_generic_popup_request(true, buttons, {header, body});
+    }
+
+    on_generic_popup_request = (rich, buttons, opts) => {
         const dialog_promise = new Promise((resolve) => {
             this.setState((state, props) => {
                 if (state.popup.callback !== null)
@@ -170,8 +184,10 @@ class App extends Component {
 
                 return {
                     popup: {
-                        header,
-                        message,
+                        rich,
+                        rich_body: rich ? opts.body : [],
+                        header: opts.header,
+                        message: !rich ? opts.message : null,
                         buttons,
                         callback: resolve
                     }
@@ -184,6 +200,8 @@ class App extends Component {
 
             this.setState({
                 popup: {
+                    rich: false,
+                    rich_body: [],
                     header: null,
                     message: null,
                     buttons: [],
@@ -367,6 +385,22 @@ class App extends Component {
         });
     }
 
+    test_rich = () => {
+        const body = (
+            <>
+                <RichPopup.Checkbox key_name={'test'} name={'test'} label={'test checkbox'} />
+            </>
+        );
+        Status.rich_popup(
+            [Constants.POPUP_BUTTON_YES, Constants.POPUP_BUTTON_NO],
+            'Test RichPopup dialog',
+            body,
+        ).then((result) => {
+            console.log(result.button);
+            console.dir(result.data);
+        });
+    }
+
     render() {
         if (!this.state.course_data) {
             console.log('Course data is still null');
@@ -389,16 +423,32 @@ class App extends Component {
             name: campus
         }));
 
+        let popup = null;
+
+        if (this.state.popup.callback !== null && this.state.popup.rich) {
+            popup = (
+                <RichPopup.Popup
+                    header={this.state.popup.header}
+                    buttons={this.state.popup.buttons}
+                    onInteract={this.state.popup.callback}
+                >
+                    {this.state.popup.rich_body}
+                </RichPopup.Popup>
+            );
+        } else if (this.state.popup.callback !== null) {
+            popup = (
+                <Status.Popup
+                    header={this.state.popup.header}
+                    message={this.state.popup.message}
+                    buttons={this.state.popup.buttons}
+                    onInteract={this.state.popup.callback}
+                />
+            )
+        }
+
         return (
             <div className="App">
-                {this.state.popup.callback !== null ?
-                    <Status.Popup
-                        header={this.state.popup.header}
-                        message={this.state.popup.message}
-                        buttons={this.state.popup.buttons}
-                        onInteract={this.state.popup.callback}
-                    />
-                : null}
+                {popup}
 
                 <div className='banner header'>
                     <div className='banner-left'>
@@ -413,14 +463,15 @@ class App extends Component {
                         </div>
                     </div>
                     <div className='banner-right'>
+                        <InlineButton value='Rich Popup' onClick={this.test_rich} />
                         <InlineButton value='Generate image' onClick={this.on_generate_image} />
-                        <InlineButton value={'Change theme'} onClick={this.on_theme_toggle} />
+                        <InlineButton value='Change theme' onClick={this.on_theme_toggle} />
                     </div>
                 </div>
                 <div className='main-content'>
                     <div className='sidebar app-component'>
                         <Selector options={term_options} value={this.state.schedule_data[this.state.current_campus].current_term.code} onChange={this.on_term_change} />
-                        <CourseSearch onChange={this.on_search} />
+                        <LineEdit onChange={this.on_search} placeholder='Search courses...' />
                         <Button
                             role={'normal'}
                             value={'Reset Selections'}
