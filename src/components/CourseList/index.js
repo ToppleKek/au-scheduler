@@ -1,5 +1,8 @@
 import { Component } from 'react';
-import InlineButton from '../InlineButton';
+import {
+    InlineButton,
+    LineEdit
+} from '../';
 import * as Util from '../../util';
 import './CourseList.css';
 
@@ -58,7 +61,7 @@ class ListChildHeader extends Component {
 export default class CourseList extends Component {
     constructor(props) {
         super(props);
-        this.state = { expanded_courses: [], stage_expanded: true };
+        this.state = { expanded_courses: [], stage_expanded: true, search_term: '' };
     }
 
     _any_registration_available(courses) {
@@ -168,16 +171,22 @@ export default class CourseList extends Component {
         });
     }
 
+    term_searched = (term) => {
+        this.setState({
+            search_term: term
+        });
+    }
+
     render() {
         let filtered_courses = this.props.courses;
 
-        if (this.props.search_term?.length > 0) {
+        if (this.state.search_term?.length > 0) {
             const options = {
                 keys: ['course_code_full', 'course_name'],
                 threshhold: -10000
             };
 
-            filtered_courses = fuzzysort.go(this.props.search_term, filtered_courses, options).map((e) => e.obj);
+            filtered_courses = fuzzysort.go(this.state.search_term, filtered_courses, options).map((e) => e.obj);
         }
 
 
@@ -200,13 +209,17 @@ export default class CourseList extends Component {
 
         return (
             <div className='course-list'>
-                <div className='course-list-header-item' onClick={this.course_stage_expanded}>Staged Courses</div>
-                <div className='course-list-stage'>
-                    {this.state.stage_expanded ? staged_courses : null}
+                <LineEdit onChange={this.term_searched} placeholder='Search courses...' />
+                <div className='course-list-body'>
+                    <div className='course-list-header-item' onClick={this.course_stage_expanded}>Staged Courses</div>
+                    <div className='course-list-stage'>
+                        {this.state.stage_expanded ? staged_courses : null}
+                    </div>
+                    <div className='course-list-header-item'>All Courses</div>
+                    {courses.length === 0 ? 'No results' : courses}
                 </div>
-                <div className='course-list-header-item'>All Courses</div>
-                {courses.length === 0 ? 'No results' : courses}
             </div>
+
         );
     }
 }

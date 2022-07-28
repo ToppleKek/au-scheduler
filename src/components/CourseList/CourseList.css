@@ -13,12 +13,19 @@
 
 .course-list {
     background-color: var(--colour-background);
-    overflow: scroll;
     flex-grow: 1;
+    overflow: hidden;
     color: var(--colour-text);
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 10px;
 }
 
-.course-list::-webkit-scrollbar {
+.course-list-body {
+    overflow: auto;
+}
+
+.course-list-body::-webkit-scrollbar {
     display: none;
 }
 

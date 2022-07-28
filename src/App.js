@@ -7,7 +7,6 @@ import { Component, createRef } from 'react';
 import html2canvas from 'html2canvas';
 import {
     Selector,
-    LineEdit,
     CourseList,
     Scheduler,
     CalendarView,
@@ -40,7 +39,6 @@ class App extends Component {
             terms: [],
             courses: [],
             current_campus: localStorage.getItem('current_campus') || Constants.AU_CAMPUS_LOCATIONS[0],
-            search_term: '',
             scheduler_mode: Constants.SCHEDULER_DEFAULT_MODE,
             filter: { online: false },
             theme: 'dark',
@@ -286,12 +284,6 @@ class App extends Component {
         });
     }
 
-    on_search = (text) => {
-        this.setState({
-            search_term: text
-        });
-    }
-
     on_stage = (course_code, children) => {
         this.setState((state, props) => {
 
@@ -471,7 +463,6 @@ class App extends Component {
                 <div className='main-content'>
                     <div className='sidebar app-component'>
                         <Selector options={term_options} value={this.state.schedule_data[this.state.current_campus].current_term.code} onChange={this.on_term_change} />
-                        <LineEdit onChange={this.on_search} placeholder='Search courses...' />
                         <Button
                             role={'normal'}
                             value={'Reset Selections'}
@@ -480,7 +471,6 @@ class App extends Component {
                         <CourseList
                             courses={this.state.courses}
                             staged_courses={this.current_term().staged_courses}
-                            search_term={this.state.search_term}
                             onStage={this.on_stage}
                             onUnstage={this.on_unstage}
                         />
