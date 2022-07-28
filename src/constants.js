@@ -77,8 +77,11 @@ export const THEMES = {
         grid_border: '#151515',
         interactable: '#353535',
         positive_button: '#09ba38',
+        positive_button_hover: '#057a24',
         negative_button: '#e63737',
+        negative_button_hover: '#b61616',
         normal_button: '#505050',
+        normal_button_hover: '#404040',
     },
     light: {
         background: '#eee',
@@ -87,8 +90,10 @@ export const THEMES = {
         highlight: '#555',
         grid_border: '#aeaeae',
         interactable: '#bbb',
-        positive_button: '#09ba38',
+        positive_button_hover: '#0fba38',
         negative_button: '#e63737',
+        negative_button_hover: '#ee3737',
         normal_button: '#aaa',
+        normal_button_hover: '#caa',
     }
 };

@@ -6,29 +6,29 @@
 
 .positive-button {
     transition: background-color 0.15s ease-out;
-    border: 3px solid var(--colour-positive_button);
-}
-
-.positive-button:hover {
     background-color: var(--colour-positive_button);
 }
 
+.positive-button:hover {
+    background-color: var(--colour-positive_button_hover);
+}
+
 .negative-button {
+    background-color: var(--colour-negative_button);
     transition: background-color 0.15s ease-out;
-    border: 3px solid var(--colour-negative_button);
 }
 
 .negative-button:hover {
-    background-color: var(--colour-negative_button);
+    background-color: var(--colour-negative_button_hover);
 }
 
 .normal-button {
     color: var(--colour-text);
+    background-color: var(--colour-primary);
     transition: background-color 0.15s ease-out;
-    border: 3px solid var(--colour-normal_button);
 }
 
 .normal-button:hover {
-    background-color: var(--colour-normal_button);
+    background-color: var(--colour-interactable);
 
 }
