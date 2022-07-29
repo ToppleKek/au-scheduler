@@ -9,7 +9,7 @@ export default class LineEdit extends Component {
     render() {
         return (
             <div className='generic-line-edit'>
-                <input type='text' placeholder={this.props.placeholder} onChange={this.value_changed} />
+                <input type='text' placeholder={this.props.placeholder} value={this.props.value} onChange={this.value_changed} />
             </div>
         );
     }

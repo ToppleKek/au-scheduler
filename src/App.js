@@ -380,7 +380,7 @@ class App extends Component {
     test_rich = () => {
         const body = (
             <>
-                <RichPopup.Checkbox key_name={'test'} name={'test'} label={'test checkbox'} />
+                <RichPopup.Checkbox key_name={'test'} name={'test'} label={'test checkbox'} value={true} />
             </>
         );
         Status.rich_popup(
@@ -450,8 +450,7 @@ class App extends Component {
                                 options={campus_options}
                                 value={this.state.current_campus}
                                 onChange={this.on_campus_change}
-                            >
-                            </Selector>
+                            />
                         </div>
                     </div>
                     <div className='banner-right'>

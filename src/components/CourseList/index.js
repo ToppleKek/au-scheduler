@@ -183,7 +183,7 @@ export default class CourseList extends Component {
         if (this.state.search_term?.length > 0) {
             const options = {
                 keys: ['course_code_full', 'course_name'],
-                threshhold: -10000
+                threshold: -10000
             };
 
             filtered_courses = fuzzysort.go(this.state.search_term, filtered_courses, options).map((e) => e.obj);

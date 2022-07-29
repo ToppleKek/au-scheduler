@@ -1,7 +1,6 @@
 @keyframes pop-in {
     from {
         background-color: rgba(15, 15, 15, 0);
-        backdrop-filter: none;
     }
 }
 
@@ -20,7 +19,6 @@
     align-content: center;
     justify-content: center;
     background-color: rgba(15, 15, 15, 0.8);
-    backdrop-filter: blur(16px);
     width: 100vw;
     height: 100vh;
     z-index: 1000;
