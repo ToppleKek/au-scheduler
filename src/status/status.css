@@ -45,7 +45,11 @@
     font-size: xx-large;
     font-weight: bolder;
     margin-bottom: 1em;
+}
 
+.popup-sub-header {
+    font-size: large;
+    font-weight: bold;
 }
 
 .popup-message {

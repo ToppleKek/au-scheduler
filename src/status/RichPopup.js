@@ -10,7 +10,19 @@ export class Popup extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { obj: null };
+        const obj = {};
+        let children = props.children.props.children;
+
+        if ((typeof children) === 'object')
+            children = [children];
+
+        children.forEach((child) => {
+            console.log('iterating child:', {key_name:child.props?.key_name,value:child.props?.value});
+            if (child.props?.key_name)
+                obj[child.props.key_name] = child.props?.value;
+        });
+
+        this.state = { obj };
     }
 
     on_button_click = (button) => {
@@ -70,16 +82,94 @@ export class Popup extends Component {
     }
 }
 
+export function Header(props) {
+    return (
+        <div className='popup-sub-header'>
+            {props.children}
+        </div>
+    );
+}
+
 export class Checkbox extends Component {
     static contextType = PopupInteractionContext;
 
-    on_change = (checked) => {
-        this.context.callback(this.props.key_name, checked);
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            value: this.props.value
+        };
+    }
+
+    on_change = (value) => {
+        this.context.callback(this.props.key_name, value);
+        this.setState({
+            value
+        });
     }
 
     render() {
         return (
-            <Components.Checkbox name={this.props.name} label={this.props.label} onChange={this.on_change}/>
+            <Components.Checkbox
+                name={this.props.name}
+                label={this.props.label}
+                value={this.state.value}
+                onChange={this.on_change}
+            />
+        );
+    }
+}
+
+export class LineEdit extends Component {
+    static contextType = PopupInteractionContext;
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            value: this.props.value
+        };
+    }
+
+    on_change = (value) => {
+        this.context.callback(this.props.key_name, value);
+        this.setState({
+            value
+        });
+    }
+
+    render() {
+        return (
+            <Components.LineEdit onChange={this.on_change} placeholder={this.props.placeholder} value={this.state.value} />
+        );
+    }
+}
+
+export class Selector extends Component {
+    static contextType = PopupInteractionContext;
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            value: this.props.value
+        };
+    }
+
+    on_change = (value) => {
+        this.context.callback(this.props.key_name, value);
+        this.setState({
+            value
+        });
+    }
+
+    render() {
+        return (
+            <Components.Selector
+                options={this.props.options}
+                value={this.state.value}
+                onChange={this.on_change}
+            />
         );
     }
 }

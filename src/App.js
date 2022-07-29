@@ -393,6 +393,32 @@ class App extends Component {
         });
     }
 
+    on_edit_schedule_filter = () => {
+        const body = (
+            <>
+                <RichPopup.Header>Course Options</RichPopup.Header>
+                <RichPopup.Checkbox key_name='online_filter' label='Exclude online courses' value={this.state.filter.online} />
+            </>
+        );
+
+        Status.rich_popup(
+            [Constants.POPUP_BUTTON_OK, Constants.POPUP_BUTTON_CANCEL],
+            'Edit Schedule Filter',
+            body
+        ).then((result) => {
+            if (result.button === Constants.POPUP_BUTTON_OK) {
+                this.setState((state) => {
+                    const copy = { ...state.filter };
+                    copy.online = result.data.online_filter;
+
+                    return {
+                        filter: copy
+                    };
+                });
+            }
+        });
+    }
+
     render() {
         if (!this.state.course_data) {
             console.log('Course data is still null');
@@ -476,7 +502,7 @@ class App extends Component {
                     </div>
                     <div className='scheduler-wrapper app-component'>
                         <Selector options={Constants.SCHEDULER_MODE_OPTIONS} value={this.state.scheduler_mode} onChange={this.on_scheduler_mode_change} />
-                        <Checkbox name='online-filter' label='Exclude online courses' onChange={this.on_online_course_filter_change} />
+                        <Button role='normal' value='Filter...' onClick={this.on_edit_schedule_filter} />
                         <Scheduler
                             courses={this.current_term().staged_courses}
                             mode={this.state.scheduler_mode}
