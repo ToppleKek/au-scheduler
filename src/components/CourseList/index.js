@@ -73,19 +73,6 @@ export default class CourseList extends Component {
         return false;
     }
 
-    _condense_courses(courses) {
-        const course_map = new Map();
-
-        for (const course of courses) {
-            if (!course_map.has(course.course_code))
-                course_map.set(course.course_code, [course]);
-            else
-                course_map.get(course.course_code).push(course);
-        }
-
-        return course_map;
-    }
-
     _generate_course_element(course_code, child_courses) {
             let lecture_child_elements = [];
             let lab_child_elements = [];
@@ -194,8 +181,8 @@ export default class CourseList extends Component {
             this.props.staged_courses.hasOwnProperty(course.course_code)
         );
 
-        const course_map = this._condense_courses(filtered_courses);
-        const course_stage_map = this._condense_courses(course_stage);
+        const course_map = Util.condense_courses(filtered_courses);
+        const course_stage_map = Util.condense_courses(course_stage);
         const courses = [];
         const staged_courses = [];
 

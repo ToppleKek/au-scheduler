@@ -155,6 +155,19 @@ export function group_course(code) {
     return '?';
 }
 
+export function condense_courses(courses) {
+    const course_map = new Map();
+
+    for (const course of courses) {
+        if (!course_map.has(course.course_code))
+            course_map.set(course.course_code, [course]);
+        else
+            course_map.get(course.course_code).push(course);
+    }
+
+    return course_map;
+}
+
 export function timestr_to_ints(timestr) {
     const times = timestr.replaceAll(' ', '').split('-');
 
