@@ -67,8 +67,32 @@ class App extends Component {
             return;
         }
 
+        const copy = structuredClone(this.state.schedule_data);
+
+        // Remove unneeded course data to save space and prevent stale data in localStorage
+        for (const campus in copy) {
+            for (const term_code in copy[campus].terms) {
+                const term = copy[campus].terms[term_code];
+
+                // Remove unneeded course data from schedule
+                for (let i = 0; i < term.current_schedule.length; ++i) {
+                    const colour = term.current_schedule[i].colour;
+                    const course_code_full = term.current_schedule[i].course_code_full;
+
+                    term.current_schedule[i] = {
+                        colour,
+                        course_code_full
+                    };
+                }
+
+                // Delete all children from staged courses
+                for (const course_code in term.staged_courses)
+                delete term.staged_courses[course_code].children;
+            }
+        }
+
         localStorage.setItem('current_campus', this.state.current_campus);
-        localStorage.setItem('schedule_data', JSON.stringify(this.state.schedule_data));
+        localStorage.setItem('schedule_data', JSON.stringify(copy));
     }
 
     /**
@@ -149,6 +173,34 @@ class App extends Component {
                                 current_schedule: []
                             };
                         }
+                    }
+                }
+
+                // Fill in missing course data from localStorage
+                for (const campus in schedule_data) {
+                    for (const term_code in schedule_data[campus].terms) {
+                        const term = schedule_data[campus].terms[term_code];
+                        const json_term = json.campuses[campus].terms.find((t) => t.code === term_code);
+
+                        // Fill in missing schedule data
+                        for (let i = 0; i < term.current_schedule.length; ++i) {
+                            const colour = term.current_schedule[i].colour;
+                            const course_code_full = term.current_schedule[i].course_code_full;
+                            const full_course = json_term.courses.find((course) =>
+                                course.course_code_full === course_code_full
+                            );
+
+                            term.current_schedule[i] = {
+                                colour,
+                                ...full_course
+                            };
+                        }
+
+                        const course_map = Util.condense_courses(json_term.courses);
+
+                        // Fill in missing staged course data
+                        for (const course_code in term.staged_courses)
+                            term.staged_courses[course_code].children = course_map.get(course_code);
                     }
                 }
 
