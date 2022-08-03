@@ -1,0 +1,29 @@
+{
+    "type": "object",
+    "patternProperties": {
+        ".*": {
+            "type": "object",
+            "properties": {
+                "current_term": {
+                    "type": "object",
+                    "properties": {
+                        "code": { "type": "string" },
+                        "name": { "type": "string" }
+                    }
+                },
+                "terms": {
+                    "patternProperties": {
+                        "\\d+": {
+                            "type": "object",
+                            "properties": {
+                                "current_schedule": { "type": "array" },
+                                "staged_courses": { "type": "object" }
+                            }
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            }
+        }
+    }
+}

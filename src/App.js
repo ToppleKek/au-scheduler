@@ -5,15 +5,18 @@ import * as Status from './status/status';
 import * as RichPopup from './status/RichPopup';
 import { Component, createRef } from 'react';
 import html2canvas from 'html2canvas';
+import * as StorageSchema from './storage_schema.json';
+import Ajv from 'ajv';
 import {
     Selector,
     CourseList,
     Scheduler,
     CalendarView,
-    Checkbox,
     InlineButton,
     Button
 } from './components';
+
+const validate_storage = new Ajv().compile(StorageSchema);
 
 class App extends Component {
     constructor(props) {
@@ -126,7 +129,7 @@ class App extends Component {
 
                 let loaded_term;
                 let schedule_data = this.state.schedule_data;
-                if (!schedule_data)
+                if (!schedule_data || !validate_storage(schedule_data))
                     schedule_data = this._init_local_storage(json);
 
                 // Remove terms that no longer exist
