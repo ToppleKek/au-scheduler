@@ -341,14 +341,6 @@ class App extends Component {
 
     on_stage = (course_code, children) => {
         this.setState((state, props) => {
-
-            // We do not need the description here and it takes up a huge chunk
-            // of space when we save our state to localStorage. We really don't
-            // actually need to save all the course data to localStorage, but it's
-            // a quick and dirty way to save our state.
-            for (const course of children)
-                delete course.description;
-
             const current_term_copy = { ...this.current_term(state) };
             const schedule_data = { ...state.schedule_data };
             const current_term_code = schedule_data[state.current_campus].current_term.code;
