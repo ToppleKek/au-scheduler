@@ -299,7 +299,6 @@ export function cartesian(courses) {
 }
 
 export function schedule(courses) {
-    // TODO: consistent use of 'colour' vs 'color'
     /*
         courses looks like:
         {
@@ -321,13 +320,26 @@ export function schedule(courses) {
     const only_labs = children.map((child) => child.filter((course) => course.course_type === 'Lab')).filter((child) => child.length !== 0);
     const lec_schedule = only_lectures.length !== 0 ? cartesian(only_lectures) : [];
     const lab_schedule = only_labs.length !== 0 ? cartesian(only_labs) : [];
-    const b = [lec_schedule, lab_schedule];
-    const a = b.filter((schedule) => schedule.length !== 0);
-    const schedules = a.length === 1 ? a[0] : cartesian(a);
+    const full_schedule = [lec_schedule, lab_schedule].filter((schedule) => schedule.length !== 0);
+    const schedules = full_schedule.length === 1 ? full_schedule[0] : cartesian(full_schedule);
 
-    return schedules
-        .filter((schedule) => schedule.every((course) => schedule.every((course2) => !check_conflict(course, course2))))
-        .map((schedule) => { schedule.forEach((course) => course.colour = courses[course.course_code].colour); return schedule; });
+    let filtered_schedules = schedules;
+
+    filtered_schedules = filtered_schedules.filter((schedule) => {
+        for (let i = 0; i < schedule.length; ++i) {
+            for (let j = i; j < schedule.length; ++j) {
+                if (check_conflict(schedule[i], schedule[j]))
+                    return false;
+            }
+        }
+
+        return true;
+    });
+
+    return filtered_schedules.map((schedule) =>{
+        schedule.forEach((course) => course.colour = courses[course.course_code].colour);
+        return schedule;
+    });
 }
 
 export function sort_schedules(method, schedules) {

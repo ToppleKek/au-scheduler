@@ -9,6 +9,7 @@ class CalendarPreview extends Component {
 
     render() {
         const num_async = this.props.schedule.filter((course) => !!!course.time).length;
+
         return (
             <div key={`preview-${this.props.id}`} className='calendar-preview' onClick={this.on_schedule}>
                 <div className='calendar-preview-slots'>
@@ -34,8 +35,8 @@ class CalendarPreview extends Component {
 
 class PreviewTimeSlot extends Component {
     render() {
-        const start = new String(this.props.start_time).padStart(4, '0');
-        const end = new String(this.props.end_time).padStart(4, '0');
+        const start = this.props.start_time.toString().padStart(4, '0');
+        const end = this.props.end_time.toString().padStart(4, '0');
         const days = this.props.days.toLowerCase().split(' / ');
         const time_slots = [];
 
