@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import './Checkbox.css';
+import './style/Checkbox.css';
 
 export default class Checkbox extends Component {
     on_change = (event) => {

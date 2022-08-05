@@ -1,7 +1,5 @@
 import { Component } from 'react';
-import './Button.css';
-import * as Util from '../../util';
-import * as Constants from '../../constants';
+import './style/Button.css';
 
 export default class Button extends Component {
     clicked = (event) => {
@@ -11,11 +9,6 @@ export default class Button extends Component {
     }
 
     render() {
-        // const bgc = Util.parse_colour(this.props.colour);
-        // const style = {
-        //     color: Constants.THEMES[Util.text_colour_from_bg(bgc.r, bgc.g, bgc.b)].text
-        // };
-
         const class_list = `generic-button ${this.props.role}-button`;
 
         return (

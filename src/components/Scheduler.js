@@ -1,6 +1,6 @@
 import { Component } from 'react';
-import * as Util from '../../util';
-import './Scheduler.css';
+import * as Util from '../util';
+import './style/Scheduler.css';
 
 class CalendarPreview extends Component {
     on_schedule = (event) => {

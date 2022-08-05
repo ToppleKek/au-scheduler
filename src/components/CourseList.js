@@ -2,9 +2,9 @@ import { Component } from 'react';
 import {
     InlineButton,
     LineEdit
-} from '../';
-import * as Util from '../../util';
-import './CourseList.css';
+} from '.';
+import * as Util from '../util';
+import './style/CourseList.css';
 
 const fuzzysort = require('fuzzysort');
 

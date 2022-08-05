@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import './LineEdit.css';
+import './style/LineEdit.css';
 
 export default class LineEdit extends Component {
     value_changed = (event) => {

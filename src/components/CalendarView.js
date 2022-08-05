@@ -1,7 +1,7 @@
 import { Component } from 'react';
-import * as Constants from '../../constants';
-import * as Util from '../../util';
-import './CalendarView.css';
+import * as Constants from '../constants';
+import * as Util from '../util';
+import './style/CalendarView.css';
 
 class CalendarEntry extends Component {
     render() {

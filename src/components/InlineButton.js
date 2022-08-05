@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import './InlineButton.css';
+import './style/InlineButton.css';
 
 export default class InlineButton extends Component {
     clicked = (event) => {

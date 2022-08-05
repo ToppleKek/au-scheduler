@@ -1,5 +1,5 @@
 import { Component, createRef } from 'react';
-import './Selector.css';
+import './style/Selector.css';
 
 class Option extends Component {
     on_click = (event) => {
