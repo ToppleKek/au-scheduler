@@ -52,7 +52,7 @@ class TimeSlot extends Component {
 
         const tooltip_style = {
             visibility: this.state.hovered ? 'visible' : 'hidden'
-        }
+        };
 
         const bgc = Util.parse_colour(this.props.course.colour);
         const text_class = `time-slot-text-${Util.text_colour_from_bg(bgc.r, bgc.g, bgc.b)}`;

@@ -21,7 +21,7 @@ class CalendarPreview extends Component {
                             start_time={times.start}
                             end_time={times.end}
                             days={course.day}
-                            colour={this.props.courses[course.course_code].colour}
+                            colour={course.colour}
                         />;
                     })}
                 </div>
@@ -62,24 +62,100 @@ class PreviewTimeSlot extends Component {
 }
 
 export default class Scheduler extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            schedules: [],
+            filtered_schedules: [],
+            sorted_schedules: []
+        };
+    }
+
+    dispatch_full_reschedule(props) {
+        return new Promise((resolve) => {
+            this.full_reschedule(props, resolve);
+        });
+    }
+
+    dispatch_filter(props) {
+        return new Promise((resolve) => {
+            this.setState((state) => {
+                const filtered_schedules = this._filter(state.schedules, props.filter);
+
+                return {
+                    filtered_schedules,
+                    sorted_schedules: Util.sort_schedules(props.mode, filtered_schedules)
+                };
+            }, resolve);
+        });
+    }
+
+    dispatch_sort(props) {
+        return new Promise((resolve) => {
+            this.setState((state) => ({
+                sorted_schedules: Util.sort_schedules(props.mode, state.schedules)
+            }), resolve);
+        });
+    }
+
+    full_reschedule(props, callback) {
+        if (!props)
+            props = this.props;
+
+        let schedules = Util.schedule(props.courses);
+        let filtered_schedules = this._filter(schedules, props.filter);
+
+        this.setState({
+            schedules,
+            filtered_schedules,
+            sorted_schedules: Util.sort_schedules(props.mode, filtered_schedules)
+        }, callback);
+    }
+
+    _filter(schedules, filter) {
+        let ret = schedules; // ref
+
+        if (filter.online)
+            ret = ret.filter((schedules) => !schedules.some((course) => course.online));
+
+        return ret;
+    }
+
+    componentDidMount() {
+        this.full_reschedule();
+        this.forceUpdate();
+    }
+
+    shouldComponentUpdate(next_props, next_state) {
+        console.log(this.props, next_props, Util.shallow_equality(this.props.filter, next_props.filter));
+        // The more possible schedules there are, the more expensive it is to
+        // render the scheduler. To prevent unnecessary renders, we only render
+        // once the scheduler is done generating a new set of schedules.
+        if (Object.keys(this.props.courses).length !== Object.keys(next_props.courses).length)
+            this.dispatch_full_reschedule(next_props).then(() => this.forceUpdate());
+        else if (this.props.mode !== next_props.mode)
+            this.dispatch_sort(next_props).then(() => this.forceUpdate());
+        else if (!Util.shallow_equality(this.props.filter, next_props.filter))
+            this.dispatch_filter(next_props).then(() => this.forceUpdate());
+
+        return false;
+    }
+
     render() {
-        let schedules = Util.schedule(this.props.courses);
-
-        if (this.props.filter.online)
-            schedules = schedules.filter((schedule) => !schedule.some((course) => course.online));
-
-        schedules = Util.sort_schedules(this.props.mode, schedules);
-
         let i = 0;
-        const human_schedules = schedules.map((schedule) => (
+
+        // TODO: windowing/infinite scroll?
+        const human_schedules = this.state.sorted_schedules.map((schedule) => (
             <CalendarPreview
                 key={`schedule${i}`}
                 id={`schedule${++i}`}
                 schedule={schedule}
-                courses={this.props.courses}
                 onSchedule={this.props.onSchedule}
             />
         ));
+
+        console.log(`PERF: displaying ${human_schedules.length} schedules`);
 
         return (
             <div className='scheduler'>

@@ -551,7 +551,7 @@ class App extends Component {
                         <Selector options={Constants.SCHEDULER_MODE_OPTIONS} value={this.state.scheduler_mode} onChange={this.on_scheduler_mode_change} />
                         <Button role='normal' value='Filter...' onClick={this.on_edit_schedule_filter} />
                         <Scheduler
-                            courses={this.current_term().staged_courses}
+                            courses={structuredClone(this.current_term().staged_courses)}
                             mode={this.state.scheduler_mode}
                             filter={this.state.filter}
                             onSchedule={this.on_current_schedule_change}

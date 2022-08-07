@@ -97,6 +97,17 @@ import * as Constants from './constants';
 //     return parse_courses(row_elements[3].children[0]);
 // }
 
+export function shallow_equality(obj1, obj2) {
+    const obj1_keys = Object.keys(obj1);
+    const obj2_keys = Object.keys(obj2);
+
+    if (obj1_keys.length !== obj2_keys.length)
+        return false;
+
+    return obj1_keys.every((key) => obj1[key] === obj2[key]) &&
+           obj2_keys.every((key) => obj2[key] === obj1[key]);
+}
+
 export function date_delta(from, to) {
     const delta = Math.floor((to - from) / 1000);
 
@@ -329,6 +340,10 @@ export function schedule(courses) {
         for (let i = 0; i < schedule.length; ++i) {
             for (let j = i; j < schedule.length; ++j) {
                 if (check_conflict(schedule[i], schedule[j]))
+                    return false;
+
+                // Do not schedule accelerated labs with regular lectures and vice versa
+                if (schedule[i].course_code === schedule[j].course_code && schedule[i].runtime !== schedule[j].runtime)
                     return false;
             }
         }
