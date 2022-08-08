@@ -108,6 +108,24 @@ export function shallow_equality(obj1, obj2) {
            obj2_keys.every((key) => obj2[key] === obj1[key]);
 }
 
+export function deep_clone(obj) {
+    if (window.structuredClone)
+        return window.structuredClone(obj);
+
+    // Safari :D
+    const ret = {};
+    for (const key in obj) {
+        if ((Array.isArray(obj[key])))
+            ret[key] = [].concat(obj[key]);
+        else if ((typeof obj[key]) === 'object')
+            ret[key] = deep_clone(obj[key]);
+        else
+            ret[key] = obj[key];
+    }
+
+    return ret;
+}
+
 export function date_delta(from, to) {
     const delta = Math.floor((to - from) / 1000);
 
