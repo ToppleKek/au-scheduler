@@ -1,0 +1,11 @@
+.folder {
+    display: flex;
+    flex-flow: column nowrap;
+    overflow: hidden;
+    height: 100%;
+}
+
+.fold-header {
+    background-color: var(--colour-interactable);
+    color: var(--colour-text);
+}

@@ -28,6 +28,20 @@
     padding-right: 6px;
 }
 
+@media (max-width: 1000px) {
+    .main-content {
+        flex-flow: column nowrap;
+    }
+
+    .sidebar {
+        width: 100% !important;
+    }
+
+    .scheduler-wrapper {
+        width: 100% !important;
+    }
+}
+
 .header {
     border-bottom: 2px solid grey;
     border-top: none !important;
@@ -85,8 +99,7 @@ body {
 }
 
 .sidebar {
-    min-width: 300px;
-    max-width: 300px;
+    width: 300px;
     display: flex;
     flex-flow: column nowrap;
     gap: 5px;
@@ -94,7 +107,6 @@ body {
 
 .scheduler-wrapper {
     width: 300px;
-    min-width: 300px;
     display: flex;
     flex-flow: column nowrap;
     gap: 5px;

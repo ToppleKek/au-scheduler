@@ -6,3 +6,5 @@ export {default as LineEdit} from './LineEdit';
 export {default as InlineButton} from './InlineButton';
 export {default as Scheduler} from './Scheduler';
 export {default as Selector} from './Selector';
+export {default as Folder} from './Folder';
+export {default as Fold} from './Fold';

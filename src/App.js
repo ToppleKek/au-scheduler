@@ -13,7 +13,9 @@ import {
     Scheduler,
     CalendarView,
     InlineButton,
-    Button
+    Button,
+    Folder,
+    Fold
 } from './components';
 
 const validate_storage = new Ajv().compile(StorageSchema);
@@ -45,6 +47,7 @@ class App extends Component {
             scheduler_mode: Constants.SCHEDULER_DEFAULT_MODE,
             filter: { online: false },
             theme: 'dark',
+            mobile: false,
             popup: {
                 rich: false,
                 rich_body: [],
@@ -145,6 +148,14 @@ class App extends Component {
 
     componentDidMount() {
         console.log('App did mount!');
+
+        const is_mobile = window.matchMedia('(max-width: 1000px)');
+        is_mobile.addEventListener('change', (event) =>
+            this.setState({
+                mobile: event.matches
+            })
+        );
+
         fetch('/course_data.json')
             .then((response) => response.json())
             .then((json) => {
@@ -209,6 +220,7 @@ class App extends Component {
                 );
 
                 this.setState({
+                    mobile: is_mobile.matches,
                     course_data: json,
                     schedule_data,
                     courses: loaded_term ? loaded_term.courses : json.campuses[current_campus_name].terms[0].courses
@@ -511,6 +523,42 @@ class App extends Component {
             )
         }
 
+        const course_list_sidebar = (
+            <div className='sidebar app-component'>
+                <Selector options={term_options} value={this.state.schedule_data[this.state.current_campus].current_term.code} onChange={this.on_term_change} />
+                <Button
+                    role={'normal'}
+                    value={'Reset Selections'}
+                    onClick={this.stage_reset}
+                />
+                <CourseList
+                    courses={this.state.courses}
+                    staged_courses={this.current_term().staged_courses}
+                    onStage={this.on_stage}
+                    onUnstage={this.on_unstage}
+                />
+            </div>
+        );
+
+        const scheduler_wrapper = (
+            <div className='scheduler-wrapper app-component'>
+                <Selector options={Constants.SCHEDULER_MODE_OPTIONS} value={this.state.scheduler_mode} onChange={this.on_scheduler_mode_change} />
+                <Button role='normal' value='Filter...' onClick={this.on_edit_schedule_filter} />
+                <Scheduler
+                    courses={structuredClone(this.current_term().staged_courses)}
+                    mode={this.state.scheduler_mode}
+                    filter={this.state.filter}
+                    onSchedule={this.on_current_schedule_change}
+                />
+            </div>
+        );
+
+        const calendar_view_wrapper = (
+            <div className='calendar-wrapper app-component' ref={this.calendar_view_ref}>
+                <CalendarView schedule={this.current_term().current_schedule} />
+            </div>
+        );
+
         return (
             <div className="App">
                 {popup}
@@ -533,33 +581,29 @@ class App extends Component {
                     </div>
                 </div>
                 <div className='main-content'>
-                    <div className='sidebar app-component'>
-                        <Selector options={term_options} value={this.state.schedule_data[this.state.current_campus].current_term.code} onChange={this.on_term_change} />
-                        <Button
-                            role={'normal'}
-                            value={'Reset Selections'}
-                            onClick={this.stage_reset}
-                        />
-                        <CourseList
-                            courses={this.state.courses}
-                            staged_courses={this.current_term().staged_courses}
-                            onStage={this.on_stage}
-                            onUnstage={this.on_unstage}
-                        />
-                    </div>
-                    <div className='scheduler-wrapper app-component'>
-                        <Selector options={Constants.SCHEDULER_MODE_OPTIONS} value={this.state.scheduler_mode} onChange={this.on_scheduler_mode_change} />
-                        <Button role='normal' value='Filter...' onClick={this.on_edit_schedule_filter} />
-                        <Scheduler
-                            courses={structuredClone(this.current_term().staged_courses)}
-                            mode={this.state.scheduler_mode}
-                            filter={this.state.filter}
-                            onSchedule={this.on_current_schedule_change}
-                        />
-                    </div>
-                    <div className='calendar-wrapper app-component' ref={this.calendar_view_ref}>
-                        <CalendarView schedule={this.current_term().current_schedule} />
-                    </div>
+                    {this.state.mobile ?
+                        <Folder>
+                            <Fold name='Courses'>
+                                {course_list_sidebar}
+                            </Fold>
+                            <Fold name='Schedules'>
+                                {scheduler_wrapper}
+                            </Fold>
+                            <Fold name='Calendar'>
+                                {calendar_view_wrapper}
+                            </Fold>
+                        </Folder>
+                    :
+                    <>
+                        {course_list_sidebar}
+                        {scheduler_wrapper}
+                        {calendar_view_wrapper}
+                    </>
+
+                    }
+
+
+
                 </div>
                 <div className='banner'>
                     <div className='banner-left'>
