@@ -3,9 +3,13 @@
     flex-flow: column nowrap;
     overflow: hidden;
     height: 100%;
+    gap: 5px;
 }
 
 .fold-header {
     background-color: var(--colour-interactable);
     color: var(--colour-text);
+    font-size: large;
+    padding: 5px;
+    border-radius: 5px;
 }

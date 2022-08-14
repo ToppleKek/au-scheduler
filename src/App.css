@@ -40,6 +40,12 @@
     .scheduler-wrapper {
         width: 100% !important;
     }
+
+    .calendar-wrapper {
+        overflow: auto;
+        width: auto;
+        height: auto;
+    }
 }
 
 .header {
