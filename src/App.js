@@ -90,7 +90,7 @@ class App extends Component {
 
                 // Delete all children from staged courses
                 for (const course_code in term.staged_courses)
-                delete term.staged_courses[course_code].children;
+                    delete term.staged_courses[course_code].children;
             }
         }
 
