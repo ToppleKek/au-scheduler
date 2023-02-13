@@ -79,9 +79,12 @@ export default class Selector extends Component {
                     </div>
                 </div>
 
+                {this.state.expanded ?
                 <div className='selector-options' ref={this.options_ref}>
                     {this.state.expanded ? options : null}
                 </div>
+                : null}
+
             </div>
         );
     }

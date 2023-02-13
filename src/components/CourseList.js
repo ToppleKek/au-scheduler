@@ -1,9 +1,13 @@
 import { Component } from 'react';
 import {
+    Button,
     InlineButton,
     LineEdit
 } from '.';
 import * as Util from '../util';
+import * as Status from '../status/status';
+import * as RichPopup from '../status/RichPopup';
+import * as Constants from '../constants';
 import './style/CourseList.css';
 
 const fuzzysort = require('fuzzysort');
@@ -61,7 +65,7 @@ class ListChildHeader extends Component {
 export default class CourseList extends Component {
     constructor(props) {
         super(props);
-        this.state = { expanded_courses: [], stage_expanded: true, search_term: '' };
+        this.state = { expanded_courses: [], stage_expanded: true, search_term: '', search_options: {day: 'any', time: 'any'} };
     }
 
     _any_registration_available(courses) {
@@ -164,6 +168,76 @@ export default class CourseList extends Component {
         });
     }
 
+    on_edit_search_options = () => {
+        const day_options = [{
+            value: 'any',
+            key: 'any',
+            name: 'Any'
+        }, {
+            value: 'MON',
+            key: 'monday',
+            name: 'Monday'
+        }, {
+            value: 'TUE',
+            key: 'tuesday',
+            name: 'Tuesday'
+        }, {
+            value: 'WED',
+            key: 'wednesday',
+            name: 'Wednesday'
+        }, {
+            value: 'THU',
+            key: 'thursday',
+            name: 'Thursday'
+        }, {
+            value: 'FRI',
+            key: 'friday',
+            name: 'Friday'
+        }];
+
+        const time_options = [{
+            value: 'any',
+            key: 'any',
+            name: 'Any'
+        }];
+
+        for (let time = 800, b = true; time <= 2200; time += b ? 30 : 70, b = !b) {
+            const timestr = time.toString();
+            time_options.push({
+                value: `${timestr}`,
+                key: `${timestr}`,
+                name: `${timestr.slice(0, timestr.length - 2)}:${timestr.slice(timestr.length - 2)}`
+            });
+        }
+
+        const body = (
+            <>
+                <RichPopup.Header>Class Day</RichPopup.Header>
+                <RichPopup.Selector key_name='day_filter' value={this.state.search_options.day} options={day_options} />
+                <RichPopup.Header>Class Start Time</RichPopup.Header>
+                <RichPopup.Selector key_name='time_filter' value={this.state.search_options.time} options={time_options} />
+            </>
+        );
+
+        Status.rich_popup(
+            [Constants.POPUP_BUTTON_OK, Constants.POPUP_BUTTON_CANCEL],
+            'Edit Search Options',
+            body
+        ).then((result) => {
+            if (result.button === Constants.POPUP_BUTTON_OK) {
+                this.setState((state) => {
+                    const copy = { ...state.search_options };
+                    copy.day = result.data.day_filter ?? copy.day;
+                    copy.time = result.data.time_filter ?? copy.time;
+
+                    return {
+                        search_options: copy
+                    };
+                });
+            }
+        });
+    }
+
     render() {
         let filtered_courses = this.props.courses;
 
@@ -176,6 +250,31 @@ export default class CourseList extends Component {
             filtered_courses = fuzzysort.go(this.state.search_term, filtered_courses, options).map((e) => e.obj);
         }
 
+        if (this.state.search_options.day !== 'any') {
+            filtered_courses = filtered_courses.filter((course) => {
+                if (!course.day)
+                    return false;
+
+                return course.day.includes(this.state.search_options.day);
+            });
+        }
+
+        if (this.state.search_options.time !== 'any') {
+            filtered_courses = filtered_courses.filter((course) => {
+                if (!course.time)
+                    return false;
+
+                let start_time = course.time.split(' - ')[0];
+                const pm = start_time.substr(-2, 2) === 'PM';
+
+                start_time = Number.parseInt(start_time.replaceAll(/:|PM|AM/g, ''));
+
+                if (pm)
+                    start_time += 1200;
+
+                return start_time.toString() === this.state.search_options.time;
+            });
+        }
 
         const course_stage = this.props.courses.filter((course) =>
             this.props.staged_courses.hasOwnProperty(course.course_code)
@@ -197,6 +296,7 @@ export default class CourseList extends Component {
         return (
             <div className='course-list'>
                 <LineEdit onChange={this.term_searched} placeholder='Search courses...' />
+                <Button role='normal' value='Search Options...' onClick={this.on_edit_search_options} />
                 <div className='course-list-body'>
                     <div className='course-list-header-item' onClick={this.course_stage_expanded}>Staged Courses</div>
                     <div className='course-list-stage'>
