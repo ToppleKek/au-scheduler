@@ -64,6 +64,16 @@
     width: 100%;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    overflow: scroll;
+    overflow: auto;
     max-height: 300px;
+}
+
+.selector-options::-webkit-scrollbar {
+    background: var(--colour-interactable);
+    width: 0.5em;
+}
+
+.selector-options::-webkit-scrollbar-thumb {
+    background:  var(--colour-text);
+    border-radius: 5px;
 }
