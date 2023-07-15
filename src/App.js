@@ -169,9 +169,16 @@ class App extends Component {
 
                 // Remove terms that no longer exist
                 for (const campus in schedule_data) {
+                    if (json.campuses[campus].terms.filter((t) => t.code === schedule_data[campus].current_term.code).length === 0) {
+                        console.log('Current term no longer exists, resetting');
+                        schedule_data[campus].current_term = json.campuses[campus].terms[0];
+                    }
+
                     for (const term in schedule_data[campus].terms) {
-                        if (json.campuses[campus].terms.filter((t) => t.code === term).length === 0)
+                        if (json.campuses[campus].terms.filter((t) => t.code === term).length === 0) {
+                            console.log(`Deleting old term code=${term} campus=${campus}`);
                             delete schedule_data[campus].terms[term];
+                        }
                     }
                 }
 
