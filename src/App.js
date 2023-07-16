@@ -358,7 +358,7 @@ class App extends Component {
         });
     }
 
-    on_stage = (course_code, children) => {
+    on_stage = (course_code) => {
         this.setState((state, props) => {
             const current_term_copy = { ...this.current_term(state) };
             const schedule_data = { ...state.schedule_data };
@@ -366,7 +366,7 @@ class App extends Component {
 
             current_term_copy.staged_courses[course_code] = {
                 colour: `#${Math.floor(Math.random() * 4096).toString(16).padStart(3, '0')}`,
-                children
+                children: state.courses.filter((c) => c.course_code === course_code)
             };
 
             schedule_data[state.current_campus].terms[current_term_code] = current_term_copy;
@@ -601,15 +601,12 @@ class App extends Component {
                             </Fold>
                         </Folder>
                     :
-                    <>
-                        {course_list_sidebar}
-                        {scheduler_wrapper}
-                        {calendar_view_wrapper}
-                    </>
-
+                        <>
+                            {course_list_sidebar}
+                            {scheduler_wrapper}
+                            {calendar_view_wrapper}
+                        </>
                     }
-
-
 
                 </div>
                 <div className='banner'>

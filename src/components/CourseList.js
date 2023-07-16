@@ -19,7 +19,7 @@ class ListChildHeader extends Component {
 
     course_staged = () => {
         console.log('staged ' + this.props.course_code);
-        this.props.onStage(this.props.course_code, this.props.children);
+        this.props.onStage(this.props.course_code);
     }
 
     course_unstaged = () => {
@@ -123,7 +123,6 @@ export default class CourseList extends Component {
                         colour={colour}
                         course_code={course_code}
                         course_name={child_courses[0].course_name}
-                        children={child_courses}
                         staged={this.props.staged_courses.hasOwnProperty(course_code)}
                         expanded={this.state.expanded_courses.includes(course_code)}
                         onClick={this.course_expanded}
@@ -250,6 +249,7 @@ export default class CourseList extends Component {
             filtered_courses = fuzzysort.go(this.state.search_term, filtered_courses, options).map((e) => e.obj);
         }
 
+        // TODO: Add a warning if we filter out required labs
         if (this.state.search_options.day !== 'any') {
             filtered_courses = filtered_courses.filter((course) => {
                 if (!course.day)
