@@ -443,22 +443,6 @@ class App extends Component {
         });
     }
 
-    test_rich = () => {
-        const body = (
-            <>
-                <RichPopup.Checkbox key_name={'test'} name={'test'} label={'test checkbox'} value={true} />
-            </>
-        );
-        Status.rich_popup(
-            [Constants.POPUP_BUTTON_YES, Constants.POPUP_BUTTON_NO],
-            'Test RichPopup dialog',
-            body,
-        ).then((result) => {
-            console.log(result.button);
-            console.dir(result.data);
-        });
-    }
-
     on_edit_schedule_filter = () => {
         const body = (
             <>
@@ -582,7 +566,6 @@ class App extends Component {
                         </div>
                     </div>
                     <div className='banner-right'>
-                        <InlineButton value='Rich Popup' onClick={this.test_rich} />
                         <InlineButton value='Generate image' onClick={this.on_generate_image} />
                         <InlineButton value='Change theme' onClick={this.on_theme_toggle} />
                     </div>
@@ -619,7 +602,7 @@ class App extends Component {
                         <div className='banner-text'></div>
                     </div>
                     <div className='banner-right'>
-                        <div className='banner-text'>(c) 2022 Braeden Hong</div>
+                        <div className='banner-text'>(c) 2022-2023 Braeden Hong</div>
                     </div>
                 </div>
             </div>
