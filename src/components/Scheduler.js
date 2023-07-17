@@ -132,7 +132,9 @@ export default class Scheduler extends Component {
         // The more possible schedules there are, the more expensive it is to
         // render the scheduler. To prevent unnecessary renders, we only render
         // once the scheduler is done generating a new set of schedules.
-        if (Object.keys(this.props.courses).length !== Object.keys(next_props.courses).length)
+        const has_same_courses = Object.keys(this.props.courses).every((prop) => next_props.courses.hasOwnProperty(prop)) &&
+                                Object.keys(next_props.courses).every((prop) => this.props.courses.hasOwnProperty(prop));
+        if (!has_same_courses || this.props.term !== next_props.term)
             this.dispatch_full_reschedule(next_props).then(() => this.forceUpdate());
         else if (this.props.mode !== next_props.mode)
             this.dispatch_sort(next_props).then(() => this.forceUpdate());

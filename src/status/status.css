@@ -31,8 +31,8 @@
     position: relative;
     color: var(--colour-text);
     text-align: center;
-    height: 35%;
-    width: 40%;
+    height: auto;
+    width: auto;
     background-color: var(--colour-background);
     border-radius: 5px;
     display: flex;
