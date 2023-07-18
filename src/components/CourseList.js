@@ -65,7 +65,7 @@ class ListChildHeader extends Component {
 export default class CourseList extends Component {
     constructor(props) {
         super(props);
-        this.state = { expanded_courses: [], stage_expanded: true, search_term: '', search_options: {day: 'any', time: 'any'} };
+        this.state = { expanded_courses: [], stage_expanded: true, search_term: '', search_options: {day: 'any', time: 'any', level: 'any'} };
     }
 
     _any_registration_available(courses) {
@@ -200,6 +200,32 @@ export default class CourseList extends Component {
             name: 'Any'
         }];
 
+        const level_options = [{
+            value: 'any',
+            key: 'any',
+            name: 'Any'
+        }, {
+            value: '1',
+            key: '1',
+            name: '1000 (First year)'
+        }, {
+            value: '2',
+            key: '2',
+            name: '2000 (Second year)'
+        }, {
+            value: '3',
+            key: '3',
+            name: '3000 (Third year)'
+        }, {
+            value: '4',
+            key: '4',
+            name: '4000 (Fourth year)'
+        }, {
+            value: '5',
+            key: '5',
+            name: '5000 (Masters first year)'
+        }];
+
         for (let time = 800, b = true; time <= 2200; time += b ? 30 : 70, b = !b) {
             const timestr = time.toString();
             time_options.push({
@@ -215,6 +241,8 @@ export default class CourseList extends Component {
                 <RichPopup.Selector key_name='day_filter' value={this.state.search_options.day} options={day_options} />
                 <RichPopup.Header>Class Start Time</RichPopup.Header>
                 <RichPopup.Selector key_name='time_filter' value={this.state.search_options.time} options={time_options} />
+                <RichPopup.Header>Class Level</RichPopup.Header>
+                <RichPopup.Selector key_name='level_filter' value={this.state.search_options.level} options={level_options} />
             </>
         );
 
@@ -228,6 +256,7 @@ export default class CourseList extends Component {
                     const copy = { ...state.search_options };
                     copy.day = result.data.day_filter ?? copy.day;
                     copy.time = result.data.time_filter ?? copy.time;
+                    copy.level = result.data.level_filter ?? copy.level;
 
                     return {
                         search_options: copy
@@ -275,6 +304,9 @@ export default class CourseList extends Component {
                 return start_time.toString() === this.state.search_options.time;
             });
         }
+
+        if (this.state.search_options.level !== 'any')
+            filtered_courses = filtered_courses.filter((course) => course.course_code.substr(-4, 1) === this.state.search_options.level);
 
         const course_stage = this.props.courses.filter((course) =>
             this.props.staged_courses.hasOwnProperty(course.course_code)
