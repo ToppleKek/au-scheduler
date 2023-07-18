@@ -15,16 +15,35 @@ const fuzzysort = require('fuzzysort');
 class ListChildHeader extends Component {
     clicked = () => {
         this.props.onClick(this.props.course_code);
-    }
+    };
 
     course_staged = () => {
         console.log('staged ' + this.props.course_code);
         this.props.onStage(this.props.course_code);
-    }
+    };
 
     course_unstaged = () => {
         this.props.onUnstage(this.props.course_code);
-    }
+    };
+
+    course_info_requested = () => {
+        Status.popup(
+            [Constants.POPUP_BUTTON_OK],
+            `${this.props.course_name} (${this.props.course_code})`,
+            this.props.course_description
+        ).then((button) => {
+            if (button === Constants.POPUP_BUTTON_YES) {
+                this.setState((state, props) => {
+                    const schedule_data = { ...state.schedule_data };
+                    this.current_term().staged_courses = {};
+
+                    return {
+                        schedule_data
+                    };
+                });
+            }
+        });
+    };
 
     render() {
         const colour_style = {
@@ -49,11 +68,16 @@ class ListChildHeader extends Component {
                 >
                     <div className='course-header-action-bar'>
                         <span className='action-bar-text'>{this.props.course_code} ({Util.group_course(this.props.course_code)})</span>
-                        <InlineButton
-                            className='action-bar-button'
-                            value={this.props.staged ? 'Remove' : 'Add'}
-                            onClick={this.props.staged ? this.course_unstaged : this.course_staged}
-                        />
+                            <InlineButton
+                                className='action-bar-button'
+                                value={'Info'}
+                                onClick={this.course_info_requested}
+                            />
+                            <InlineButton
+                                className='action-bar-button'
+                                value={this.props.staged ? 'Remove' : 'Add'}
+                                onClick={this.props.staged ? this.course_unstaged : this.course_staged}
+                            />
                     </div>
                     {this.props.course_name}
                 </div>
@@ -123,6 +147,7 @@ export default class CourseList extends Component {
                         colour={colour}
                         course_code={course_code}
                         course_name={child_courses[0].course_name}
+                        course_description={child_courses[0].description}
                         staged={this.props.staged_courses.hasOwnProperty(course_code)}
                         expanded={this.state.expanded_courses.includes(course_code)}
                         onClick={this.course_expanded}

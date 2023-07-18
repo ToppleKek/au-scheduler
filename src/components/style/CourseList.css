@@ -5,6 +5,7 @@
 .course-header-action-bar {
     display: flex;
     flex-flow: row nowrap;
+    gap: 6px;
 }
 
 .action-bar-text {
