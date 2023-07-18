@@ -19,9 +19,10 @@ export default class Selector extends Component {
     constructor(props) {
         super(props);
 
+        this.body_ref = createRef();
         this.parent_ref = createRef();
         this.options_ref = createRef();
-        this.state = { expanded: false };
+        this.state = { expanded: false, width: 0 };
     }
 
     option_selected = (new_value) => {
@@ -34,7 +35,8 @@ export default class Selector extends Component {
     toggle = () => {
         this.setState((state) => {
             return {
-                expanded: !state.expanded
+                expanded: !state.expanded,
+                width: this.body_ref.current.getBoundingClientRect().width
             };
         })
     }
@@ -68,7 +70,7 @@ export default class Selector extends Component {
         ).name;
 
         return (
-            <div className='selector-body'>
+            <div className='selector-body' ref={this.body_ref}>
                 <div className='selector-container'>
                     <div
                         className={`selector ${this.state.expanded ? 'selector-expanded' : ''}`}
@@ -80,7 +82,7 @@ export default class Selector extends Component {
                 </div>
 
                 {this.state.expanded ?
-                <div className='selector-options' ref={this.options_ref}>
+                <div className='selector-options' ref={this.options_ref} style={{width: this.state.width}}>
                     {this.state.expanded ? options : null}
                 </div>
                 : null}

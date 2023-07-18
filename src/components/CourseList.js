@@ -68,16 +68,16 @@ class ListChildHeader extends Component {
                 >
                     <div className='course-header-action-bar'>
                         <span className='action-bar-text'>{this.props.course_code} ({Util.group_course(this.props.course_code)})</span>
-                            <InlineButton
-                                className='action-bar-button'
-                                value={'Info'}
-                                onClick={this.course_info_requested}
-                            />
-                            <InlineButton
-                                className='action-bar-button'
-                                value={this.props.staged ? 'Remove' : 'Add'}
-                                onClick={this.props.staged ? this.course_unstaged : this.course_staged}
-                            />
+                        <InlineButton
+                            className='action-bar-button'
+                            value={'Info'}
+                            onClick={this.course_info_requested}
+                        />
+                        <InlineButton
+                            className='action-bar-button'
+                            value={this.props.staged ? 'Remove' : 'Add'}
+                            onClick={this.props.staged ? this.course_unstaged : this.course_staged}
+                        />
                     </div>
                     {this.props.course_name}
                 </div>

@@ -59,9 +59,8 @@
     z-index: 3000;
     color: var(--colour-text);
     background-color: var(--colour-interactable);
-    position: absolute;
+    position: fixed;
     user-select: none;
-    width: 100%;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
     overflow: auto;
@@ -70,6 +69,7 @@
 
 .selector-options::-webkit-scrollbar {
     background: var(--colour-interactable);
+    border-radius: 5px;
     width: 0.5em;
 }
 
