@@ -8,12 +8,12 @@ class CalendarPreview extends Component {
     }
 
     render() {
-        const num_async = this.props.schedule.filter((course) => !!!course.time).length;
+        const num_async = this.props.schedule.filter((course) => !!!course.time || !!!course.day).length;
 
         return (
             <div key={`preview-${this.props.id}`} className='calendar-preview' onClick={this.on_schedule}>
                 <div className='calendar-preview-slots'>
-                    {this.props.schedule.filter((course) => !!course.time).map((course) => {
+                    {this.props.schedule.filter((course) => !!course.time && !!course.day).map((course) => {
                         const times = Util.timestr_to_ints(course.time);
                         return <PreviewTimeSlot
                             key={course.course_code_full + course.day}

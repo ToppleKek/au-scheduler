@@ -74,6 +74,6 @@
 }
 
 .selector-options::-webkit-scrollbar-thumb {
-    background:  var(--colour-text);
+    background: var(--colour-text);
     border-radius: 5px;
 }
